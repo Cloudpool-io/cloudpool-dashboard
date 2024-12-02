@@ -75,7 +75,7 @@ export const columns: ColumnDef<Contributor>[] = [
   {
     accessorKey: "rank",
     header: () => <div className="text-center">Rank</div>,
-    cell: ({ row }) => {
+    cell: () => {
       return <div className="text-center">#1</div>;
     },
   },
