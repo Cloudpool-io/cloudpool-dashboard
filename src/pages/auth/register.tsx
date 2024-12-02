@@ -1,10 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { registerFormInputs, registerSchema } from "./form";
 import { useForm } from "react-hook-form";
-
-import { Card, CardContent, CardHeader } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-
+import { useToast } from "@/hooks/use-toast";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -12,34 +16,38 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../components/ui/form";
-import { Github, Loader2 } from "lucide-react";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { NavLink } from "react-router";
 import { Typography } from "@/components/ui/typography";
 import { useAuth } from "@/context/AuthProvider";
-import { loginFormInputs, loginSchema } from "./form";
 
-export const Login = () => {
+export const Register = () => {
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
-  const { signIn } = useAuth();
 
-  const { control, formState, handleSubmit } = form;
+  const { signUp } = useAuth();
 
-  const onSubmit = async (data: loginFormInputs) => {
-    const parsed = await loginSchema.safeParseAsync(data);
+
+  const {
+    control,
+    formState: { isSubmitting },
+    handleSubmit,
+  } = form;
+
+  const onSubmit = async (data: registerFormInputs) => {
+    const parsed = await registerSchema.safeParseAsync(data);
     if (parsed.success) {
-      await signIn(data);
+      await signUp(data);
     }
-  };
-
-  const handleGithubSignIn = async () => {
-    //await onDataActionForGithubSignIn(id as string);
   };
 
   return (
@@ -47,16 +55,8 @@ export const Login = () => {
       <CardHeader className="text-center flex items-center mb-4">
         <Typography>Cloudpool</Typography>
       </CardHeader>
-      <CardContent className="grid grid-cols-auto gap-4">
-        <Button
-          className="inline-flex items-center justify-center"
-          type="button"
-          onClick={handleGithubSignIn}
-        >
-          <Github />
-          <div className="ml-2">Continue with Github</div>
-        </Button>
 
+      <CardContent className="grid grid-cols-auto gap-4">
         <Form {...form}>
           <form
             className="grid grid-cols-auto gap-4"
@@ -75,6 +75,7 @@ export const Login = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={control}
               name="password"
@@ -92,14 +93,31 @@ export const Login = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={formState.isSubmitting}>
-              {formState.isSubmitting ? (
+            <FormField
+              control={control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Confirm your password"
+                      {...field}
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
-              Sign in
+              Sign up
             </Button>
             <Button type="button" variant="link">
-              <NavLink to="/auth/register">Create an account</NavLink>
+              <NavLink to="/auth/login">Already have an account?</NavLink>
             </Button>
           </form>
         </Form>
