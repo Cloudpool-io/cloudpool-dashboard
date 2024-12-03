@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeftIcon, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import z from "zod";
 import {
   Form,
   FormControl,
@@ -24,73 +23,61 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Region } from "@/core/enums/Region.enum";
+import { SoftwareStack } from "@/core/enums/SoftwareStack.enum";
+import { contributionFormInputs, contributionSchema } from "./form/main";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { env } from "@/core/env";
+import { useAuth } from "@/context/AuthProvider";
 
-const softwareStackOptions = [
-  {
-    value: "1",
-    label: "PostgreSQL",
+const DEFAULT_CONTRIBUTION_FORM_VALUES = {
+  name: "",
+  infraProvider: "",
+  softwareStack: "",
+  region: "",
+  version: "",
+  credentials: {
+    Private_Key: "",
+    Host: "",
+    Port: "",
+    Username: "",
+    Password: "",
+    Database_Name: "",
   },
-  {
-    value: "2",
-    label: "MySQL",
-  },
-  {
-    value: "3",
-    label: "MongoDB",
-  },
-  {
-    value: "4",
-    label: "Debian",
-  },
-  {
-    value: "5",
-    label: "Ubuntu",
-  },
-  {
-    value: "6",
-    lable: "Milvus",
-  },
-];
-
-const contributionSchema = z.object({
-  infra: z.string(),
-  machine_configuration: z.string().optional(),
-  software_stack: z.string(),
-  version: z.string(),
-  cpu: z.string(),
-  disk_size: z.string(),
-  ram: z.string(),
-  region: z.string(),
-});
-
-type contributionForm = z.infer<typeof contributionSchema>;
+  cpu: 0,
+  ram: 0,
+  diskSizeGb: 0,
+};
 
 export const AddContributionFormPage = () => {
   const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(contributionSchema),
-    defaultValues: {
-      infra: "",
-      machine_configuration: "",
-      software_stack: "",
-      version: "",
-      cpu: "",
-      disk_size: "",
-      ram: "",
-      region: "",
-    },
+    defaultValues: DEFAULT_CONTRIBUTION_FORM_VALUES,
   });
+
   const { control, formState, handleSubmit } = form;
 
-  const onSubmit = (data: contributionForm) => {
-    fetch("https://api.example.com/contributions", {
+  const stack = form.watch("softwareStack");
+
+  const onSubmit = async (data: contributionFormInputs) => {
+    const response = await fetch(`${env.api}/contributions`, {
       method: "POST",
       body: JSON.stringify(data),
+      credentials: "include",
     });
+    const json = await response.json();
+    console.log(json);
   };
+
   return (
     <>
-      <Button size="icon" onClick={() => navigate("/dashboard/main")}>
+      <Button size="icon" onClick={() => navigate("/dashboard")}>
         <ChevronLeftIcon />
       </Button>
       <Card>
@@ -105,7 +92,20 @@ export const AddContributionFormPage = () => {
             >
               <FormField
                 control={control}
-                name="infra"
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Type provider here" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="infraProvider"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Infrastructure provider</FormLabel>
@@ -118,24 +118,7 @@ export const AddContributionFormPage = () => {
               />
               <FormField
                 control={control}
-                name="machine_configuration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Machine configuration(Optional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Configuration"
-                        {...field}
-                        type="password"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="software_stack"
+                name="softwareStack"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Software Stack</FormLabel>
@@ -144,18 +127,220 @@ export const AddContributionFormPage = () => {
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
+                        <SelectValue placeholder="Select Software stack" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {softwareStackOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
+                          {Object.entries(SoftwareStack).map(([key, value]) => (
+                            <SelectItem key={key} value={value}>
+                              {value}
                             </SelectItem>
                           ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {stack !== "" && (
+                <Accordion type="single" defaultValue="credentials" collapsible>
+                  <AccordionItem value="credentials">
+                    <AccordionTrigger>Credentials </AccordionTrigger>
+                    <AccordionContent>
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Credentials for {stack}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-2">
+                          {[
+                            SoftwareStack.Ubuntu,
+                            SoftwareStack.Debian,
+                          ].includes(
+                            SoftwareStack[stack as keyof typeof SoftwareStack],
+                          ) ? (
+                            <>
+                              <FormField
+                                control={control}
+                                name="credentials.Private_Key"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>VM Private Key</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your Private Key"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={control}
+                                name="credentials.Port"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Port</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your VM  Port"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={control}
+                                name="credentials.Host"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Database Host</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your VM Host"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={control}
+                                name="credentials.Username"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Your Username</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your Username"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <FormField
+                                control={control}
+                                name="credentials.Database_Name"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Database name</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your Database Name"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={control}
+                                name="credentials.Password"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Database password</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your database password"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={control}
+                                name="credentials.Host"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Database Host</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your Database Host"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={control}
+                                name="credentials.Username"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Database Username</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your Database Username"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={control}
+                                name="credentials.Port"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Port</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Your Database  Port"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              )}
+
+              <FormField
+                control={control}
+                name="region"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Region</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Region" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {Object.entries(Region).map(([key, value]) => (
+                            <SelectItem key={key} value={value}>
+                              {value}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -187,7 +372,7 @@ export const AddContributionFormPage = () => {
               />
               <FormField
                 control={control}
-                name="disk_size"
+                name="ram"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Disk Size</FormLabel>
@@ -200,31 +385,18 @@ export const AddContributionFormPage = () => {
               />
               <FormField
                 control={control}
-                name="ram"
+                name="diskSizeGb"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>RAM</FormLabel>
+                    <FormLabel>Disk size</FormLabel>
                     <FormControl>
-                      <Input placeholder="RAM" {...field} />
+                      <Input placeholder="Disk size input " {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={control}
-                name="region"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Region</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Region" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={formState.isSubmitting}>
+              <Button disabled={formState.isSubmitting}>
                 {formState.isSubmitting ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}

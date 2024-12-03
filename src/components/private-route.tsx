@@ -2,8 +2,8 @@ import { useAuth } from "@/context/AuthProvider";
 import { Navigate, Outlet } from "react-router-dom";
 
 export const PrivateRoute = () => {
-  const user = useAuth();
+  const { token } = useAuth();
 
-  if (!user.token) return <Navigate to="/auth/login" />;
+  if (!token) return <Navigate to="/auth/login" />;
   return <Outlet />;
 };

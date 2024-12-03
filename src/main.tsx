@@ -5,14 +5,17 @@ import "./index.css";
 import App from "./App.tsx";
 import AuthProvider from "./context/AuthProvider.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
+import { CookiesProvider } from "react-cookie";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <App />
-        <Toaster />
-      </AuthProvider>
+      <CookiesProvider>
+        <AuthProvider>
+          <App />
+          <Toaster />
+        </AuthProvider>
+      </CookiesProvider>
     </BrowserRouter>
   </StrictMode>,
 );

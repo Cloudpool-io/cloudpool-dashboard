@@ -1,13 +1,14 @@
+import { env } from "@/core/env";
 import { useToast } from "@/hooks/use-toast";
 import { loginFormInputs } from "@/pages/auth/form";
-import { useContext, createContext, FC, useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useContext, createContext, FC, useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { useLocation, useNavigate } from "react-router";
 const AuthContext = createContext({
   token: "",
-  user: null,
   signIn: (data: loginFormInputs) => Promise.resolve(),
   signUp: (data: loginFormInputs) => Promise.resolve(),
-  logout: () => {},
+  logout: () => { },
 });
 
 interface AuthProviderProps {
@@ -15,24 +16,32 @@ interface AuthProviderProps {
 }
 
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [cookies, setCookies, removeCookie] = useCookies(["token"]);
+
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   useEffect(() => {
-    if (token) {
-      navigate("/dashboard");
+    if (cookies.token) {
+      if (!location.pathname.startsWith("/dashboard")) {
+        navigate("/dashboard");
+      }
     }
-  }, []);
+  }, [cookies.token, location.pathname, navigate]);
+
   const signIn = async (data: loginFormInputs) => {
-    const response = await fetch("https://dev.api.cloudpool.io/v1/auth/login", {
+    const response = await fetch(`${env.api}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-    const json = await response.json();
+    const json = (await response.json()) as {
+      code?: number;
+      message?: string;
+      token?: string;
+    };
     if (json?.code) {
       toast({
         title: "Error",
@@ -40,23 +49,18 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         variant: "destructive",
       });
     } else {
-      localStorage.setItem("token", json.token);
-      setToken(json.token);
-      setUser(json.user);
+      setCookies("token", json.token, { path: "/" });
       navigate("/dashboard");
     }
   };
   const signUp = async (data: loginFormInputs) => {
-    const response = await fetch(
-      "https://dev.api.cloudpool.io/v1/auth/signup",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    const response = await fetch(`${env.api}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+    });
     const json = await response.json();
     if (json?.code) {
       toast({
@@ -73,13 +77,13 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     }
   };
   const logout = () => {
-    localStorage.removeItem("token");
-    setToken("");
-    setUser(null);
+    removeCookie("token", { path: "/" });
     navigate("/auth/login");
   };
   return (
-    <AuthContext.Provider value={{ token, user, signIn, signUp, logout }}>
+    <AuthContext.Provider
+      value={{ token: cookies.token, signIn, signUp, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
