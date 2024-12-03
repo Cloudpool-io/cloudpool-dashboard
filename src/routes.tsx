@@ -5,9 +5,10 @@ import { Login } from "./pages/auth/login";
 import { DashboardLayout } from "./pages/dashboard/layout";
 import { LeaderBoard } from "./pages/dashboard/leaderboard/main";
 import { Overview } from "./pages/dashboard/overview/main";
-import { AddContributionFormPage } from "./pages/dashboard/contribute/add";
 import { PrivateRoute } from "./components/private-route";
 import { Register } from "./pages/auth/register";
+import { AddContributionFormPage } from "./pages/dashboard/contributions/contribute/add";
+import { Contributions } from "./pages/dashboard/contributions/main";
 
 export const Router = () => {
   return (
@@ -23,6 +24,7 @@ export const Router = () => {
             <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<Overview />} />
             <Route path="leaderboard" element={<LeaderBoard />} />
+            <Route path="contributions" element={<Contributions />} />
             <Route
               path="contribute/add"
               element={<AddContributionFormPage />}

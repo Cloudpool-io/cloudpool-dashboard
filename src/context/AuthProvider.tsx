@@ -6,6 +6,7 @@ import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router";
 const AuthContext = createContext({
   token: "",
+  user: {},
   signIn: (data: loginFormInputs) => Promise.resolve(),
   signUp: (data: loginFormInputs) => Promise.resolve(),
   logout: () => { },
@@ -15,8 +16,9 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [cookies, setCookies, removeCookie] = useCookies(["token"]);
+  const [user, setUser] = useCookies(["user"]);
 
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -50,6 +52,15 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       });
     } else {
       setCookies("token", json.token, { path: "/" });
+      const me = await fetch(`${env.api}/contributors/me`, {
+        credentials: "include",
+        headers: {
+          Content: "application/json",
+          Cookies: `token=${json.token}`,
+        },
+      });
+      const meJson = await me.json();
+      setUser("user", JSON.stringify(meJson), { path: "/" });
       navigate("/dashboard");
     }
   };
@@ -82,14 +93,14 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   };
   return (
     <AuthContext.Provider
-      value={{ token: cookies.token, signIn, signUp, logout }}
+      value={{ token: cookies.token, signIn, signUp, logout, user: user.user }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export default AuthProvider;
+
 
 export const useAuth = () => {
   return useContext(AuthContext);

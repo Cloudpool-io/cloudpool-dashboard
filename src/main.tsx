@@ -3,19 +3,19 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import "./index.css";
 import App from "./App.tsx";
-import AuthProvider from "./context/AuthProvider.tsx";
+import { AuthProvider } from "./context/AuthProvider.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
 import { CookiesProvider } from "react-cookie";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <CookiesProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <CookiesProvider>
           <App />
           <Toaster />
-        </AuthProvider>
-      </CookiesProvider>
+        </CookiesProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 );

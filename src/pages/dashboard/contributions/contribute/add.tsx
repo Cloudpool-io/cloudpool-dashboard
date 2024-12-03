@@ -14,7 +14,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../components/ui/form";
+} from "../../../../components/ui/form";
 import {
   Select,
   SelectContent,
@@ -64,12 +64,16 @@ export const AddContributionFormPage = () => {
   const { control, formState, handleSubmit } = form;
 
   const stack = form.watch("softwareStack");
+  const { token, user } = useAuth();
 
   const onSubmit = async (data: contributionFormInputs) => {
     const response = await fetch(`${env.api}/contributions`, {
       method: "POST",
       body: JSON.stringify(data),
       credentials: "include",
+      headers: {
+        Cookies: `token=${token}`,
+      },
     });
     const json = await response.json();
     console.log(json);
