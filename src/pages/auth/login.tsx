@@ -14,10 +14,11 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 import { Github, Loader2 } from "lucide-react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { Typography } from "@/components/ui/typography";
-import { useAuth } from "@/context/AuthProvider";
 import { loginFormInputs, loginSchema } from "./form";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthProvider";
 
 export const Login = () => {
   const form = useForm({
@@ -27,14 +28,25 @@ export const Login = () => {
       password: "",
     },
   });
-  const { signIn } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const { control, formState, handleSubmit } = form;
+  const { signIn } = useAuth();
 
   const onSubmit = async (data: loginFormInputs) => {
-    const parsed = await loginSchema.safeParseAsync(data);
-    if (parsed.success) {
-      await signIn(data);
+    const result = await signIn(data);
+    if (result.code) {
+      toast({
+        title: "Failed",
+        description: result.message,
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "You have logged in successfully",
+      });
+      navigate("/dashboard/overview");
     }
   };
 

@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DataTableDemo } from "../leaderboard/table/main";
 import { Typography } from "@/components/ui/typography";
 
 export const Overview = () => {
@@ -31,7 +30,6 @@ export const Overview = () => {
         <Typography as="h2" variant="h2">
           Leaderboard
         </Typography>
-        <DataTableDemo />
       </div>
     </>
   );

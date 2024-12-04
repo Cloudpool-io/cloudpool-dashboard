@@ -1,38 +1,5 @@
 import { MoreHorizontal } from "lucide-react";
 
-export const data: Contributor[] = [
-  {
-    id: "m5gr84i9",
-    rank: 1,
-    earned: 0.05,
-    staked: 0.1,
-  },
-  {
-    id: "3u1reuv4",
-    rank: 2,
-    earned: 0.03,
-    staked: 0.05,
-  },
-  {
-    id: "derv1ws0",
-    rank: 3,
-    earned: 0.01,
-    staked: 0.02,
-  },
-  {
-    id: "5kma53ae",
-    rank: 4,
-    earned: 0.01,
-    staked: 0.02,
-  },
-  {
-    id: "bhqecj4p",
-    rank: 5,
-    earned: 0.02,
-    staked: 0.03,
-  },
-];
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,43 +11,37 @@ import {
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-export type Contributor = {
-  id: string;
-  rank: number;
-  staked: number;
-  earned: number;
-};
+import { LeaderBoardContributor } from "@/core/interfaces/contributor.interface";
 
-export const columns: ColumnDef<Contributor>[] = [
+export const columns: ColumnDef<LeaderBoardContributor>[] = [
   {
-    accessorKey: "rank",
-    header: () => <div className="text-center">Rank</div>,
-    cell: () => {
-      return <div className="text-center">#1</div>;
-    },
-  },
-  {
-    accessorKey: "staked",
-    header: () => <div className="text-center">Staked</div>,
+    accessorKey: "email",
+    header: () => <div className="text-center">Email</div>,
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("staked")}</div>;
+      return <div className="text-center">{row.original.email}</div>;
     },
   },
   {
-    accessorKey: "earned",
-    header: "Reward",
+    accessorKey: "activeContributions",
+    header: () => <div className="text-center"> Active Contributions</div>,
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("earned")}</div>
+      <div className="capitalize text-center">
+        {row.original.activeContributions}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "totalEarn",
+    header: () => <div className="text-center">Total Earned</div>,
+    cell: ({ row }) => (
+      <div className="capitalize text-center">{row.original.totalEarn}</div>
     ),
   },
   {
     id: "actions",
     header: "Actions",
-
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -92,7 +53,9 @@ export const columns: ColumnDef<Contributor>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() =>
+                navigator.clipboard.writeText(String(row.original.id))
+              }
             >
               Copy contributor ID
             </DropdownMenuItem>

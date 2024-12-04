@@ -1,14 +1,14 @@
-import { Routes, Route, Navigate } from "react-router";
-import { Layout } from "./pages/layout";
-import { AuthLayout } from "./pages/auth/layout";
-import { Login } from "./pages/auth/login";
-import { DashboardLayout } from "./pages/dashboard/layout";
-import { LeaderBoard } from "./pages/dashboard/leaderboard/main";
-import { Overview } from "./pages/dashboard/overview/main";
-import { PrivateRoute } from "./components/private-route";
-import { Register } from "./pages/auth/register";
-import { AddContributionFormPage } from "./pages/dashboard/contributions/contribute/add";
-import { Contributions } from "./pages/dashboard/contributions/main";
+import { PrivateRoute } from "@/components/private-route";
+import { AuthLayout } from "@/pages/auth/layout";
+import { Login } from "@/pages/auth/login";
+import { Register } from "@/pages/auth/register";
+import { AddContributionFormPage } from "@/pages/dashboard/contributions/contribute/add";
+import { Contributions } from "@/pages/dashboard/contributions/main";
+import { DashboardLayout } from "@/pages/dashboard/layout";
+import { LeaderBoard } from "@/pages/dashboard/leaderboard/main";
+import { Overview } from "@/pages/dashboard/overview/main";
+import { Layout } from "@/pages/layout";
+import { Navigate, Route, Routes } from "react-router";
 
 export const Router = () => {
   return (

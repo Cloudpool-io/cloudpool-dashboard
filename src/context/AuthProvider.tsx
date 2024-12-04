@@ -1,107 +1,93 @@
-import { env } from "@/core/env";
-import { useToast } from "@/hooks/use-toast";
-import { loginFormInputs } from "@/pages/auth/form";
-import { useContext, createContext, FC, useEffect } from "react";
-import { useCookies } from "react-cookie";
-import { useLocation, useNavigate } from "react-router";
-const AuthContext = createContext({
-  token: "",
-  user: {},
-  signIn: (data: loginFormInputs) => Promise.resolve(),
-  signUp: (data: loginFormInputs) => Promise.resolve(),
+import { createContext, FC, useContext, useEffect, useState } from "react";
+import { clearAuthData, getAuthData, saveAuthData } from "@/lib/utils";
+import {
+  loginFormInputs,
+  loginSchema,
+  registerFormInputs,
+  registerSchema,
+} from "@/pages/auth/form";
+import { client } from "@/core/axios/main";
+
+const AuthContext = createContext<AuthContextType>({
+  token: null,
+  signIn: async () => ({ accessToken: "", code: 0, message: "" }),
+  signUp: async () => ({ code: 0, message: "" }),
   logout: () => { },
 });
 
+interface AuthContextType {
+  logout: () => void;
+  signUp: (
+    data: registerFormInputs,
+  ) => Promise<{ code?: number; message?: "" }>;
+  signIn: (
+    data: loginFormInputs,
+  ) => Promise<{ code?: number; message?: string; accessToken?: string }>;
+  token: string | null;
+}
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [cookies, setCookies, removeCookie] = useCookies(["token"]);
-  const [user, setUser] = useCookies(["user"]);
+const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("accessToken"),
+  );
 
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const location = useLocation();
-  useEffect(() => {
-    if (cookies.token) {
-      if (!location.pathname.startsWith("/dashboard")) {
-        navigate("/dashboard");
-      }
+  const signIn = async (form: loginFormInputs) => {
+    const validation = await loginSchema.safeParseAsync(form);
+    if (!validation.success) {
+      throw new Error("Validation error");
     }
-  }, [cookies.token, location.pathname, navigate]);
 
-  const signIn = async (data: loginFormInputs) => {
-    const response = await fetch(`${env.api}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const json = (await response.json()) as {
-      code?: number;
-      message?: string;
-      token?: string;
-    };
-    if (json?.code) {
-      toast({
-        title: "Error",
-        description: json.message,
-        variant: "destructive",
-      });
-    } else {
-      setCookies("token", json.token, { path: "/" });
-      const me = await fetch(`${env.api}/contributors/me`, {
-        credentials: "include",
-        headers: {
-          Content: "application/json",
-          Cookies: `token=${json.token}`,
-        },
-      });
-      const meJson = await me.json();
-      setUser("user", JSON.stringify(meJson), { path: "/" });
-      navigate("/dashboard");
+    const result = await client.post(`/auth/login`, validation.data);
+    if (result.status !== 201) {
+      return {
+        code: "Error",
+        message: "Error",
+      };
     }
+
+    saveAuthData(result.data.accessToken);
+    setToken(result.data.accessToken);
+
+    return result.data;
   };
-  const signUp = async (data: loginFormInputs) => {
-    const response = await fetch(`${env.api}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const json = await response.json();
-    if (json?.code) {
-      toast({
-        title: "Error",
-        description: json.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Account created successfully",
-      });
-      navigate("/auth/login");
+
+  const signUp = async (form: registerFormInputs) => {
+    const validation = await registerSchema.safeParseAsync(form);
+    if (!validation.success) {
+      throw new Error("Validation error");
     }
+
+    const response = await client.post(`/auth/signup`, form);
+    return response.data;
   };
+
   const logout = () => {
-    removeCookie("token", { path: "/" });
-    navigate("/auth/login");
+    clearAuthData();
+    setToken(null);
   };
+
+  useEffect(() => {
+    const { token } = getAuthData();
+    setToken(token);
+  }, []);
+
+  const contextValue: AuthContextType = {
+    token,
+    signIn,
+    signUp,
+    logout,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{ token: cookies.token, signIn, signUp, logout, user: user.user }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
-
-
 
 export const useAuth = () => {
   return useContext(AuthContext);
 };
+
+export default AuthProvider;

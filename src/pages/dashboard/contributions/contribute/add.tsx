@@ -32,8 +32,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { env } from "@/core/env";
-import { useAuth } from "@/context/AuthProvider";
+import { client } from "@/core/axios/main";
+import { useToast } from "@/hooks/use-toast";
 
 const DEFAULT_CONTRIBUTION_FORM_VALUES = {
   name: "",
@@ -64,19 +64,22 @@ export const AddContributionFormPage = () => {
   const { control, formState, handleSubmit } = form;
 
   const stack = form.watch("softwareStack");
-  const { token, user } = useAuth();
+  const { toast } = useToast();
 
-  const onSubmit = async (data: contributionFormInputs) => {
-    const response = await fetch(`${env.api}/contributions`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      credentials: "include",
-      headers: {
-        Cookies: `token=${token}`,
-      },
-    });
-    const json = await response.json();
-    console.log(json);
+  const onSubmit = async (form: contributionFormInputs) => {
+    const response = await client.post(`/contributions`, form);
+    if (response.status === 400) {
+      console.log("here");
+      toast({
+        title: "Failed to created",
+        description: "Contributions was not created",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Your contribution was created successfully",
+      });
+    }
   };
 
   return (

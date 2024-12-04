@@ -1,11 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerFormInputs, registerSchema } from "./form";
 import { useForm } from "react-hook-form";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -17,8 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { Typography } from "@/components/ui/typography";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
 
 export const Register = () => {
@@ -30,20 +27,29 @@ export const Register = () => {
       confirmPassword: "",
     },
   });
-
+  const { toast } = useToast();
   const { signUp } = useAuth();
-
 
   const {
     control,
     formState: { isSubmitting },
     handleSubmit,
   } = form;
+  const navigate = useNavigate();
 
   const onSubmit = async (data: registerFormInputs) => {
-    const parsed = await registerSchema.safeParseAsync(data);
-    if (parsed.success) {
-      await signUp(data);
+    const result = await signUp(data);
+    if (result.code) {
+      toast({
+        title: "Error",
+        description: result.message,
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "You have successfully signed up",
+      });
+      navigate("/auth/login");
     }
   };
 
