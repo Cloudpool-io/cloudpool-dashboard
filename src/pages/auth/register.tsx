@@ -17,6 +17,7 @@ import { NavLink, useNavigate } from "react-router";
 import { Typography } from "@/components/ui/typography";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
+import { ErrorCode } from "@/core/enums/ErrorCode.enum";
 
 export const Register = () => {
   const form = useForm({
@@ -39,10 +40,12 @@ export const Register = () => {
 
   const onSubmit = async (data: registerFormInputs) => {
     const result = await signUp(data);
+
     if (result.code) {
       toast({
-        title: "Error",
+        title: ErrorCode[result.code],
         description: result.message,
+        variant: "destructive",
       });
     } else {
       toast({
@@ -54,8 +57,8 @@ export const Register = () => {
   };
 
   return (
-    <Card className="min-w-[442px]">
-      <CardHeader className="text-center flex items-center mb-4">
+    <Card className="min-w-[350px] sm:min-w-[375px]">
+      <CardHeader className="text-center flex items-center">
         <Typography>Cloudpool</Typography>
       </CardHeader>
 

@@ -11,7 +11,7 @@ import { client } from "@/core/axios/main";
 const AuthContext = createContext<AuthContextType>({
   token: null,
   signIn: async () => ({ accessToken: "", code: 0, message: "" }),
-  signUp: async () => ({ code: 0, message: "" }),
+  signUp: async () => ({ code: 0, message: "", accessToken: "" }),
   logout: () => { },
 });
 
@@ -19,7 +19,7 @@ interface AuthContextType {
   logout: () => void;
   signUp: (
     data: registerFormInputs,
-  ) => Promise<{ code?: number; message?: "" }>;
+  ) => Promise<{ code?: number; message?: string; accessToken?: string }>;
   signIn: (
     data: loginFormInputs,
   ) => Promise<{ code?: number; message?: string; accessToken?: string }>;
@@ -61,7 +61,12 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     }
 
     const response = await client.post(`/auth/signup`, form);
-    return response.data;
+
+    return response.data as {
+      code?: number;
+      message?: string;
+      accessToken?: string;
+    };
   };
 
   const logout = () => {

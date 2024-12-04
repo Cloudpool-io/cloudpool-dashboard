@@ -55,8 +55,8 @@ export const Login = () => {
   };
 
   return (
-    <Card className="min-w-[442px]">
-      <CardHeader className="text-center flex items-center mb-4">
+    <Card className="min-w-[350px]  sm:min-w-[375px]">
+      <CardHeader className="text-center flex items-center">
         <Typography>Cloudpool</Typography>
       </CardHeader>
       <CardContent className="grid grid-cols-auto gap-4">
