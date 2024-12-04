@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { DataTableDemoContributions } from "./table/main";
+import { ContributionsDataTable } from "./table/main";
 import { getContributions } from "./actions/main";
+import { columns } from "./table/columns";
 
 export const Contributions = () => {
   const [contributions, setContributions] = useState([]);
+  console.log(contributions);
 
   useEffect(() => {
     getContributions().then((data) => setContributions(data));
   }, []);
-  console.log(contributions);
 
-  return <DataTableDemoContributions />;
+  return (
+    <ContributionsDataTable data={contributions || []} columns={columns} />
+  );
 };

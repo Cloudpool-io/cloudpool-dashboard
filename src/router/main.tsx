@@ -1,4 +1,5 @@
 import { PrivateRoute } from "@/components/private-route";
+import { PublicRoute } from "@/components/public-routes";
 import { AuthLayout } from "@/pages/auth/layout";
 import { Login } from "@/pages/auth/login";
 import { Register } from "@/pages/auth/register";
@@ -14,11 +15,14 @@ export const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Navigate to="/auth/login" replace />} />
-        <Route path="/auth" element={<AuthLayout />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
+        <Route element={<PublicRoute />}>
+          <Route index element={<Navigate to="/auth/login" replace />} />
+          <Route path="/auth" element={<AuthLayout />}>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
         </Route>
+
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<Navigate to="overview" replace />} />
@@ -31,6 +35,9 @@ export const Router = () => {
             />
           </Route>
         </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/auth/login" replace />} />
       </Route>
     </Routes>
   );
