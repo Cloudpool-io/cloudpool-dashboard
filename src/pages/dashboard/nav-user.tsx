@@ -1,8 +1,8 @@
 import {
-  BadgeCheck,
-  Bell,
+  //BadgeCheck,
+  //Bell,
   ChevronsUpDown,
-  CreditCard,
+  //CreditCard,
   LogOut,
 } from "lucide-react";
 
@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
+  //DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
