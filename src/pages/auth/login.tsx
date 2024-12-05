@@ -13,12 +13,15 @@ import {
   FormLabel,
   FormMessage,
 } from "../../components/ui/form";
-import { Github, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import { Typography } from "@/components/ui/typography";
 import { loginFormInputs, loginSchema } from "./form";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
+import { useMutation } from "@tanstack/react-query";
+import { signIn } from "@/context/auth";
+import { CustomAxiosError } from "@/core/interfaces/error.interface";
 
 export const Login = () => {
   const form = useForm({
@@ -29,30 +32,41 @@ export const Login = () => {
     },
   });
   const { toast } = useToast();
+  const { setToken } = useAuth();
   const navigate = useNavigate();
 
-  const { control, formState, handleSubmit } = form;
-  const { signIn } = useAuth();
-
-  const onSubmit = async (data: loginFormInputs) => {
-    const result = await signIn(data);
-    if (result.code) {
-      toast({
-        title: "Failed",
-        description: result.message,
-      });
-    } else {
+  const mutation = useMutation({
+    mutationFn: signIn,
+    onSuccess: (data) => {
+      console.log(data);
       toast({
         title: "Success",
         description: "You have logged in successfully",
       });
+      setToken(data.accessToken);
       navigate("/dashboard/overview");
-    }
+    },
+    onError: (error: CustomAxiosError) => {
+      if (error.response?.data.code) {
+        toast({
+          title: "Failed",
+          description: error.response.data.message,
+          variant: "destructive",
+        });
+      }
+    },
+  });
+
+  const { control, formState, handleSubmit } = form;
+  //const { signIn } = useAuth();
+
+  const onSubmit = async (data: loginFormInputs) => {
+    mutation.mutate(data);
   };
 
-  const handleGithubSignIn = async () => {
-    //await onDataActionForGithubSignIn(id as string);
-  };
+  //const handleGithubSignIn = async () => {
+  //await onDataActionForGithubSignIn(id as string);
+  //};
 
   return (
     <Card className="min-w-[350px]  sm:min-w-[375px]">
@@ -60,7 +74,8 @@ export const Login = () => {
         <Typography>Cloudpool</Typography>
       </CardHeader>
       <CardContent className="grid grid-cols-auto gap-4">
-        <Button
+        {/*
+         *<Button
           className="inline-flex items-center justify-center"
           type="button"
           onClick={handleGithubSignIn}
@@ -68,6 +83,8 @@ export const Login = () => {
           <Github />
           <div className="ml-2">Continue with Github</div>
         </Button>
+
+         */}
 
         <Form {...form}>
           <form

@@ -10,6 +10,7 @@ import { client } from "@/core/axios/main";
 
 const AuthContext = createContext<AuthContextType>({
   token: null,
+  setToken: () => { },
   signIn: async () => ({ accessToken: "", code: 0, message: "" }),
   signUp: async () => ({ code: 0, message: "", accessToken: "" }),
   logout: () => { },
@@ -24,6 +25,7 @@ interface AuthContextType {
     data: loginFormInputs,
   ) => Promise<{ code?: number; message?: string; accessToken?: string }>;
   token: string | null;
+  setToken: (token: string | null) => void;
 }
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -80,6 +82,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const contextValue: AuthContextType = {
+    setToken,
     token,
     signIn,
     signUp,

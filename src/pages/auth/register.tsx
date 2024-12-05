@@ -17,7 +17,8 @@ import { NavLink, useNavigate } from "react-router";
 import { Typography } from "@/components/ui/typography";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
-import { ErrorCode } from "@/core/enums/ErrorCode.enum";
+import { useMutation } from "@tanstack/react-query";
+import { CustomAxiosError } from "@/core/interfaces/error.interface";
 
 export const Register = () => {
   const form = useForm({
@@ -38,22 +39,29 @@ export const Register = () => {
   } = form;
   const navigate = useNavigate();
 
-  const onSubmit = async (data: registerFormInputs) => {
-    const result = await signUp(data);
-
-    if (result.code) {
-      toast({
-        title: ErrorCode[result.code],
-        description: result.message,
-        variant: "destructive",
-      });
-    } else {
+  const mutation = useMutation({
+    mutationFn: signUp,
+    onSuccess: (data) => {
+      console.log(data);
       toast({
         title: "Success",
-        description: "You have successfully signed up",
-      });
+        description: "You have registered successfully",
+      })
       navigate("/auth/login");
-    }
+    },
+    onError: (error: CustomAxiosError) => {
+      if (error.response?.data.code) {
+        toast({
+          title: "Failed",
+          description: error.response.data.message,
+          variant: "destructive",
+        });
+      }
+    },
+  });
+
+  const onSubmit = async (data: registerFormInputs) => {
+    mutation.mutate(data);
   };
 
   return (

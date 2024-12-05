@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
+import { Contributions } from "../contributions/main";
 
 export const Overview = () => {
   return (
@@ -26,10 +27,12 @@ export const Overview = () => {
           </CardContent>
         </Card>
       </div>
+
       <div className="my-4 md:my-8">
         <Typography as="h2" variant="h2">
-          Leaderboard
+          Contributions
         </Typography>
+        <Contributions />
       </div>
     </>
   );

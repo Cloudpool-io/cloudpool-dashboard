@@ -9,3 +9,8 @@ export const getLeaderboardContributors = async () => {
   const { data } = await client.get("/contributors/leaderboard");
   return data;
 };
+
+export const removeContribution = async (id: string) => {
+  const { data } = await client.delete(`/contributions/${id}`);
+  return data;
+};

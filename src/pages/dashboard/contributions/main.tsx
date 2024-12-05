@@ -1,17 +1,25 @@
-import { useEffect, useState } from "react";
 import { ContributionsDataTable } from "./table/main";
 import { getContributions } from "./actions/main";
 import { columns } from "./table/columns";
+import { useQuery } from "@tanstack/react-query";
 
 export const Contributions = () => {
-  const [contributions, setContributions] = useState([]);
-  console.log(contributions);
+  const {
+    data: contributions,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["contributions"],
+    queryFn: getContributions,
+  });
 
-  useEffect(() => {
-    getContributions().then((data) => setContributions(data));
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  return (
-    <ContributionsDataTable data={contributions || []} columns={columns} />
-  );
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return <ContributionsDataTable data={contributions} columns={columns} />;
 };
