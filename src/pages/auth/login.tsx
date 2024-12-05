@@ -35,7 +35,7 @@ export const Login = () => {
   const { setToken } = useAuth();
   const navigate = useNavigate();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: signIn,
     onSuccess: (data) => {
       toast({
@@ -56,7 +56,7 @@ export const Login = () => {
     },
   });
 
-  const { control, formState, handleSubmit } = form;
+  const { control, handleSubmit } = form;
 
   const onSubmit = async (data: loginFormInputs) => {
     mutate(data);
@@ -119,8 +119,8 @@ export const Login = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={formState.isSubmitting}>
-              {formState.isSubmitting ? (
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
               Sign in

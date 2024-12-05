@@ -16,9 +16,9 @@ import { Loader2 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import { Typography } from "@/components/ui/typography";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/context/AuthProvider";
 import { useMutation } from "@tanstack/react-query";
 import { CustomAxiosError } from "@/core/interfaces/error.interface";
+import { signUp } from "@/context/auth";
 
 export const Register = () => {
   const form = useForm({
@@ -30,16 +30,11 @@ export const Register = () => {
     },
   });
   const { toast } = useToast();
-  const { signUp } = useAuth();
 
-  const {
-    control,
-    formState: { isSubmitting },
-    handleSubmit,
-  } = form;
+  const { control, handleSubmit } = form;
   const navigate = useNavigate();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: signUp,
     onSuccess: (data) => {
       console.log(data);
@@ -60,8 +55,8 @@ export const Register = () => {
     },
   });
 
-  const onSubmit = async (data: registerFormInputs) => {
-    mutate(data);
+  const onSubmit = async (form: registerFormInputs) => {
+    mutate(form);
   };
 
   return (
@@ -124,8 +119,8 @@ export const Register = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
               Sign up
