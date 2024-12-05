@@ -35,10 +35,9 @@ export const Login = () => {
   const { setToken } = useAuth();
   const navigate = useNavigate();
 
-  const mutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: signIn,
     onSuccess: (data) => {
-      console.log(data);
       toast({
         title: "Success",
         description: "You have logged in successfully",
@@ -58,10 +57,9 @@ export const Login = () => {
   });
 
   const { control, formState, handleSubmit } = form;
-  //const { signIn } = useAuth();
 
   const onSubmit = async (data: loginFormInputs) => {
-    mutation.mutate(data);
+    mutate(data);
   };
 
   //const handleGithubSignIn = async () => {

@@ -15,8 +15,7 @@ export const contributionSchema = z.object({
     Host: z.string(),
     Port: z.string(),
     Username: z.string(),
-    Password: z.string(),
-    Database_Name: z.string(),
+    Connection_String: z.string(),
   }),
   cpu: z.coerce.number().max(32767, {
     message: "CPU value must be less than or equal to 32,767",

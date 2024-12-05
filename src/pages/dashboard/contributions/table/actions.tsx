@@ -25,7 +25,7 @@ export const ContributionsActions: FC<ContributionsActionsProps> = ({
   contribution,
 }) => {
   const { toast } = useToast();
-  const mutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: removeContribution,
     onSuccess: () => {
       toast({
@@ -62,9 +62,7 @@ export const ContributionsActions: FC<ContributionsActionsProps> = ({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>View contribution details</DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => mutation.mutate(String(contribution.id))}
-        >
+        <DropdownMenuItem onClick={() => mutate(String(contribution.id))}>
           Cancel
         </DropdownMenuItem>
       </DropdownMenuContent>

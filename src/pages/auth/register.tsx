@@ -39,14 +39,14 @@ export const Register = () => {
   } = form;
   const navigate = useNavigate();
 
-  const mutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: signUp,
     onSuccess: (data) => {
       console.log(data);
       toast({
         title: "Success",
         description: "You have registered successfully",
-      })
+      });
       navigate("/auth/login");
     },
     onError: (error: CustomAxiosError) => {
@@ -61,7 +61,7 @@ export const Register = () => {
   });
 
   const onSubmit = async (data: registerFormInputs) => {
-    mutation.mutate(data);
+    mutate(data);
   };
 
   return (

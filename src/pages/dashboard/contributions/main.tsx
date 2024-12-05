@@ -2,13 +2,14 @@ import { ContributionsDataTable } from "./table/main";
 import { getContributions } from "./actions/main";
 import { columns } from "./table/columns";
 import { useQuery } from "@tanstack/react-query";
+import { Contribution } from "@/core/interfaces/contribution.interface";
 
 export const Contributions = () => {
   const {
     data: contributions,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<Contribution[]>({
     queryKey: ["contributions"],
     queryFn: getContributions,
   });
@@ -21,5 +22,7 @@ export const Contributions = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  return <ContributionsDataTable data={contributions} columns={columns} />;
+  return (
+    <ContributionsDataTable data={contributions || []} columns={columns} />
+  );
 };

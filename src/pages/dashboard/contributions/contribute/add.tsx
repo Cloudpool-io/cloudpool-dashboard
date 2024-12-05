@@ -32,8 +32,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { client } from "@/core/axios/main";
+import { useMutation } from "@tanstack/react-query";
+import { addContribution } from "../actions/main";
 import { useToast } from "@/hooks/use-toast";
+import { CustomAxiosError } from "@/core/interfaces/error.interface";
 
 const DEFAULT_CONTRIBUTION_FORM_VALUES = {
   name: "",
@@ -46,8 +48,7 @@ const DEFAULT_CONTRIBUTION_FORM_VALUES = {
     Host: "",
     Port: "",
     Username: "",
-    Password: "",
-    Database_Name: "",
+    Connection_String: "",
   },
   cpu: 0,
   ram: 0,
@@ -61,25 +62,32 @@ export const AddContributionFormPage = () => {
     defaultValues: DEFAULT_CONTRIBUTION_FORM_VALUES,
   });
 
-  const { control, formState, handleSubmit } = form;
+  const { control, handleSubmit } = form;
 
   const stack = form.watch("softwareStack");
   const { toast } = useToast();
-
-  const onSubmit = async (form: contributionFormInputs) => {
-    const response = await client.post(`/contributions`, form);
-    if (response.status === 400) {
-      console.log("here");
-      toast({
-        title: "Failed to created",
-        description: "Contributions was not created",
-      });
-    } else {
+  const { mutate, isPending } = useMutation({
+    mutationFn: addContribution,
+    onSuccess: () => {
       toast({
         title: "Success",
-        description: "Your contribution was created successfully",
+        description: "You have created a contribution successfully",
       });
-    }
+      navigate("/dashboard/overview");
+    },
+    onError: (error: CustomAxiosError) => {
+      if (error.response?.data.code) {
+        toast({
+          title: "Failed",
+          description: error.response.data.message,
+          variant: "destructive",
+        });
+      }
+    },
+  });
+
+  const onSubmit = async (form: contributionFormInputs) => {
+    mutate(form);
   };
 
   return (
@@ -237,77 +245,15 @@ export const AddContributionFormPage = () => {
                             <>
                               <FormField
                                 control={control}
-                                name="credentials.Database_Name"
+                                name="credentials.Connection_String"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>Database name</FormLabel>
+                                    <FormLabel>
+                                      Database Connection string
+                                    </FormLabel>
                                     <FormControl>
                                       <Input
-                                        placeholder="Your Database Name"
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={control}
-                                name="credentials.Password"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Database password</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Your database password"
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={control}
-                                name="credentials.Host"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Database Host</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Your Database Host"
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={control}
-                                name="credentials.Username"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Database Username</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Your Database Username"
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={control}
-                                name="credentials.Port"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Port</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Your Database  Port"
+                                        placeholder="Your connection string"
                                         {...field}
                                       />
                                     </FormControl>
@@ -382,7 +328,7 @@ export const AddContributionFormPage = () => {
                 name="ram"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Disk Size</FormLabel>
+                    <FormLabel>RAM</FormLabel>
                     <FormControl>
                       <Input placeholder="Disk Size" {...field} />
                     </FormControl>
@@ -403,8 +349,8 @@ export const AddContributionFormPage = () => {
                   </FormItem>
                 )}
               />
-              <Button disabled={formState.isSubmitting}>
-                {formState.isSubmitting ? (
+              <Button disabled={isPending}>
+                {isPending ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
                 Contribute

@@ -1,4 +1,5 @@
 import { client } from "@/core/axios/main";
+import { contributionFormInputs } from "../contribute/form/main";
 
 export const getContributions = async () => {
   const { data } = await client.get("/contributions");
@@ -12,5 +13,10 @@ export const getLeaderboardContributors = async () => {
 
 export const removeContribution = async (id: string) => {
   const { data } = await client.delete(`/contributions/${id}`);
+  return data;
+};
+
+export const addContribution = async (form: contributionFormInputs) => {
+  const { data } = await client.post("/contributions", form);
   return data;
 };

@@ -50,7 +50,7 @@ export const LeaderBoard = () => {
       </div>
       <div className="my-4 md:my-8">
         <Typography as="h2" variant="h2">
-          Contributions
+          TOP CONTRIBUTORS
         </Typography>
         <ContributorsDataTable data={contributors || []} columns={columns} />
       </div>

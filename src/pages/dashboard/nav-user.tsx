@@ -71,7 +71,8 @@ export const NavUser = () => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/*
+               *<DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
                 Account
@@ -85,7 +86,10 @@ export const NavUser = () => {
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
+               */}
+
             <DropdownMenuItem onClick={handleLogut}>
               <LogOut />
               Log out
