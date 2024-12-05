@@ -1,0 +1,16 @@
+export enum InfraProviderEnum {
+  AWS = "AWS",
+  AZURE = "Azure",
+  GCP = "GCP",
+  DIGITAL_OCEAN = "Digital Ocean",
+  HETZNER = "Hetzner",
+  LINODE = "Linode",
+  VULTR = "Vultr",
+  SCALEWAY = "Scaleway",
+  NEON = "Neon",
+  LOCAL_BARE_METAL = "Local bare metal",
+  LIGHTSAIL = "AWS Lightsail",
+  UPCLOUD = "Upcloud",
+  //CHAINSTACK = "Chainstack",
+  //NODESHIFT = "Nodeshift",
+}

@@ -10,6 +10,7 @@ import { useNavigate } from "react-router";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,6 +37,8 @@ import { useMutation } from "@tanstack/react-query";
 import { addContribution } from "../actions/main";
 import { useToast } from "@/hooks/use-toast";
 import { CustomAxiosError } from "@/core/interfaces/error.interface";
+import { Combobox } from "@/components/ui/combobox";
+import { InfraProviderEnum } from "@/core/enums/InfraProvider.enum";
 
 const DEFAULT_CONTRIBUTION_FORM_VALUES = {
   name: "",
@@ -106,31 +109,43 @@ export const AddContributionFormPage = () => {
               onSubmit={handleSubmit(onSubmit)}
             >
               <FormField
-                control={control}
-                name="name"
+                control={form.control}
+                name="infraProvider"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Infrastructure Provider</FormLabel>
                     <FormControl>
-                      <Input placeholder="Type provider here" {...field} />
+                      <Combobox
+                        fieldValue={field.value}
+                        options={Object.keys(InfraProviderEnum)}
+                        onChange={(value) => field.onChange(value)}
+                      />
                     </FormControl>
+                    <FormDescription>
+                      Select the infrastructure provider you want to contribute
+                      to the community
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <FormField
                 control={control}
-                name="infraProvider"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Infrastructure provider</FormLabel>
+                    <FormLabel>Machine configuration name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Type provider here" {...field} />
+                      <Input placeholder="Type your custom name" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Type a custom name for your machine configuration
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={control}
                 name="softwareStack"
@@ -154,11 +169,14 @@ export const AddContributionFormPage = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                    <FormDescription>
+                      Select the software stack you want to contribute to the
+                      community for the selected infrastructure provider
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
               {stack !== "" && (
                 <Accordion type="single" defaultValue="credentials" collapsible>
                   <AccordionItem value="credentials">
@@ -188,6 +206,10 @@ export const AddContributionFormPage = () => {
                                         {...field}
                                       />
                                     </FormControl>
+                                    <FormDescription>
+                                      Paste your VM private key here to connect
+                                      to the VM
+                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -204,6 +226,11 @@ export const AddContributionFormPage = () => {
                                         {...field}
                                       />
                                     </FormControl>
+                                    <FormDescription>
+                                      Enter the port number to connect to the VM
+                                      on the host machine
+                                    </FormDescription>
+
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -220,6 +247,10 @@ export const AddContributionFormPage = () => {
                                         {...field}
                                       />
                                     </FormControl>
+                                    <FormDescription>
+                                      Enter the host name to connect to the VM
+                                      on the host machine
+                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -236,6 +267,10 @@ export const AddContributionFormPage = () => {
                                         {...field}
                                       />
                                     </FormControl>
+                                    <FormDescription>
+                                      Enter the username to connect to the VM on
+                                      the host machine
+                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -257,6 +292,10 @@ export const AddContributionFormPage = () => {
                                         {...field}
                                       />
                                     </FormControl>
+                                    <FormDescription>
+                                      Paste your connection string here to
+                                      connect to the database
+                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -269,7 +308,6 @@ export const AddContributionFormPage = () => {
                   </AccordionItem>
                 </Accordion>
               )}
-
               <FormField
                 control={control}
                 name="region"
@@ -293,6 +331,10 @@ export const AddContributionFormPage = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                    <FormDescription>
+                      Select the region you want to contribute to the community
+                      for the selected infrastructure provider
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -306,6 +348,10 @@ export const AddContributionFormPage = () => {
                     <FormControl>
                       <Input placeholder="Version" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Enter the version of the software stack you want to
+                      contribute to the community
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -319,6 +365,10 @@ export const AddContributionFormPage = () => {
                     <FormControl>
                       <Input placeholder="CPU" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Enter the number of CPUs you want to contribute to the
+                      community
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -332,6 +382,10 @@ export const AddContributionFormPage = () => {
                     <FormControl>
                       <Input placeholder="Disk Size" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Enter the RAM you want to contribute to the community in
+                      GB
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -345,6 +399,10 @@ export const AddContributionFormPage = () => {
                     <FormControl>
                       <Input placeholder="Disk size input " {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Enter the disk size you want to contribute to the
+                      community in GB
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

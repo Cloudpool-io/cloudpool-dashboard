@@ -26,7 +26,8 @@ import { useAuth } from "@/context/AuthProvider";
 
 export const NavUser = () => {
   const { isMobile } = useSidebar();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  console.log(user);
   const handleLogut = () => {
     logout();
   };
@@ -42,10 +43,12 @@ export const NavUser = () => {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user?.email?.slice(0, 2).toUpperCase() || "CN"}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{""}</span>
+                <span className="truncate font-semibold">{user?.email || "Profile"}</span>
                 <span className="truncate text-xs">{""}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -61,11 +64,17 @@ export const NavUser = () => {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user?.email?.slice(0, 2).toUpperCase() || "CN"}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{""}</span>
-                  <span className="truncate text-xs">{""}</span>
+                  <span className="truncate font-semibold">
+                    {user?.email || "Profile"}
+                  </span>
+                  <span className="truncate text-xs">
+                    {user?.email || "Profile"}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>

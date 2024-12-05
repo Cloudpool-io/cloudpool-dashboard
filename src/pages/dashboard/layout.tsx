@@ -7,12 +7,18 @@ import {
 import { Outlet, useNavigate } from "react-router";
 import { AppSidebar } from "./app-sidebar";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { getMe } from "@/context/auth";
 
 export const DashboardLayout = () => {
   const navigate = useNavigate();
   const handleNavigateToContribute = () => {
     navigate("/dashboard/contribute/add");
   };
+  useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
   return (
     <SidebarProvider>
       <AppSidebar />

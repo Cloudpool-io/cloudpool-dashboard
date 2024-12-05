@@ -29,3 +29,9 @@ export const signIn = async (form: loginFormInputs) => {
   saveAuthData(response.data.accessToken);
   return response.data;
 };
+
+export const getMe = async () => {
+  const { data } = await client.get(`/contributors/me`);
+  localStorage.setItem("user", JSON.stringify(data));
+  return data;
+};
