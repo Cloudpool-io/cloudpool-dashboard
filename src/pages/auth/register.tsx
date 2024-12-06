@@ -2,14 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerFormInputs, registerSchema } from "./form";
 import { useForm } from "react-hook-form";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -36,8 +29,7 @@ export const Register = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: signUp,
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
       toast({
         title: "Success",
         description: "You have registered successfully",
@@ -61,16 +53,13 @@ export const Register = () => {
 
   return (
     <Card className="min-w-[350px] sm:min-w-[375px]">
-      <CardHeader className="text-center flex items-center">
+      <CardHeader className="flex items-center text-center">
         <Typography>Cloudpool</Typography>
       </CardHeader>
 
-      <CardContent className="grid grid-cols-auto gap-4">
+      <CardContent className="grid-cols-auto grid gap-4">
         <Form {...form}>
-          <form
-            className="grid grid-cols-auto gap-4"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form className="grid-cols-auto grid gap-4" onSubmit={handleSubmit(onSubmit)}>
             <FormField
               control={control}
               name="email"
@@ -92,11 +81,7 @@ export const Register = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Your password here"
-                      {...field}
-                      type="password"
-                    />
+                    <Input placeholder="Your password here" {...field} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,20 +94,14 @@ export const Register = () => {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Confirm your password"
-                      {...field}
-                      type="password"
-                    />
+                    <Input placeholder="Confirm your password" {...field} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" disabled={isPending}>
-              {isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
+              {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Sign up
             </Button>
             <Button type="button" variant="link">

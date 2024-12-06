@@ -16,18 +16,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthProvider";
 
 export const NavUser = () => {
   const { isMobile } = useSidebar();
   const { logout, user } = useAuth();
-  console.log(user);
   const handleLogut = () => {
     logout();
   };
@@ -43,9 +37,7 @@ export const NavUser = () => {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage />
-                <AvatarFallback className="rounded-lg">
-                  {user?.email?.slice(0, 2).toUpperCase() || "CN"}
-                </AvatarFallback>
+                <AvatarFallback className="rounded-lg">{user?.email?.slice(0, 2).toUpperCase() || "CN"}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user?.email || "Profile"}</span>
@@ -69,12 +61,8 @@ export const NavUser = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    {user?.email || "Profile"}
-                  </span>
-                  <span className="truncate text-xs">
-                    {user?.email || "Profile"}
-                  </span>
+                  <span className="truncate font-semibold">{user?.email || "Profile"}</span>
+                  <span className="truncate text-xs">{user?.email || "Profile"}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
