@@ -1,3 +1,3 @@
 export const env = {
-  api: import.meta.env.VITE_MODE_DEV === "true" ? import.meta.env.VITE_API_URL_DEV : import.meta.env.VITE_API_URL_PROD,
+  api: JSON.parse(import.meta.env.CUSTOME_MODE_DEV) === true ? import.meta.env.CUSTOM_DEV : import.meta.env.CUSTOM_PROD,
 };
