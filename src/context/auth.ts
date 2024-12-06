@@ -1,11 +1,7 @@
 import { client } from "@/core/axios/main";
+import { env } from "@/core/env";
 import { saveAuthData } from "@/lib/utils";
-import {
-  loginFormInputs,
-  loginSchema,
-  registerFormInputs,
-  registerSchema,
-} from "@/pages/auth/form";
+import { loginFormInputs, loginSchema, registerFormInputs, registerSchema } from "@/pages/auth/form";
 
 export const signUp = async (form: registerFormInputs) => {
   const validation = await registerSchema.safeParseAsync(form);
@@ -25,6 +21,7 @@ export const signIn = async (form: loginFormInputs) => {
   }
 
   const response = await client.post(`/auth/login`, validation.data);
+  console.log("URL", env.api);
 
   saveAuthData(response.data.accessToken);
   return response.data;
