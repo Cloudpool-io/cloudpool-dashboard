@@ -8,7 +8,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  //SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
@@ -51,7 +51,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <NavUser />
       </SidebarFooter>
+      {/*
       <SidebarRail />
+         */}
     </Sidebar>
   );
 }

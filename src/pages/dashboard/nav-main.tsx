@@ -1,6 +1,6 @@
 import { type LucideIcon } from "lucide-react";
 
-import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { NavLink } from "react-router";
 
 export function NavMain({
@@ -17,18 +17,32 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const { isMobile, setOpenMobile } = useSidebar();
   return (
     <SidebarGroup>
       <SidebarMenu>
         {items.map((item) => (
-          <SidebarMenuItem>
-            <NavLink to={item.url}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
-            </NavLink>
-          </SidebarMenuItem>
+          <div key={item.url}>
+            {isMobile ? (
+              <SidebarMenuItem onClick={() => setOpenMobile(false)}>
+                <NavLink to={item.url}>
+                  <SidebarMenuButton tooltip={item.title}>
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </NavLink>
+              </SidebarMenuItem>
+            ) : (
+              <SidebarMenuItem>
+                <NavLink to={item.url}>
+                  <SidebarMenuButton tooltip={item.title}>
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </NavLink>
+              </SidebarMenuItem>
+            )}
+          </div>
         ))}
       </SidebarMenu>
     </SidebarGroup>

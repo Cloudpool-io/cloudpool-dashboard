@@ -18,7 +18,6 @@ export const LeaderBoard = () => {
     queryFn: getLeaderboardContributors,
   });
 
-  console.log(user?.rank);
   if (isLoading) {
     return <div>Loading...</div>;
   }

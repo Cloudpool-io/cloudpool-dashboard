@@ -4,9 +4,21 @@ import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ChevronLeftIcon, Loader2 } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  CloudCog,
+  Cpu,
+  FileStack,
+  GalleryHorizontalEnd,
+  HardDrive,
+  KeySquare,
+  Loader2,
+  MapPinned,
+  MemoryStick,
+  MonitorCog,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import {
   Form,
   FormControl,
@@ -16,23 +28,11 @@ import {
   FormLabel,
   FormMessage,
 } from "../../../../components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Region } from "@/core/enums/Region.enum";
 import { SoftwareStack } from "@/core/enums/SoftwareStack.enum";
 import { contributionFormInputs, contributionSchema } from "./form/main";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useMutation } from "@tanstack/react-query";
 import { addContribution } from "../actions/main";
 import { useToast } from "@/hooks/use-toast";
@@ -95,25 +95,28 @@ export const AddContributionFormPage = () => {
 
   return (
     <>
-      <Button size="icon" onClick={() => navigate("/dashboard")}>
-        <ChevronLeftIcon />
-      </Button>
       <Card>
         <CardHeader>
+          <NavLink to="/dashboard/overview">
+            <Button>
+              <ChevronLeftIcon />
+              Go Back
+            </Button>
+          </NavLink>
           <CardTitle className="text-lg">Add Contribution</CardTitle>
         </CardHeader>
         <CardContent className="mt-4">
           <Form {...form}>
-            <form
-              className="grid grid-cols-auto gap-2"
-              onSubmit={handleSubmit(onSubmit)}
-            >
+            <form className="grid-cols-auto grid max-w-screen-md gap-2" onSubmit={handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="infraProvider"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Infrastructure Provider</FormLabel>
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <CloudCog />
+                      Infrastructure Provider (Optinal)
+                    </FormLabel>
                     <FormControl>
                       <Combobox
                         fieldValue={field.value}
@@ -121,10 +124,6 @@ export const AddContributionFormPage = () => {
                         onChange={(value) => field.onChange(value)}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Select the infrastructure provider you want to contribute
-                      to the community
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -134,13 +133,13 @@ export const AddContributionFormPage = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Machine configuration name</FormLabel>
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <MonitorCog />
+                      Machine Configuration Name (Optinal)
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Type your custom name" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Type a custom name for your machine configuration
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -151,11 +150,11 @@ export const AddContributionFormPage = () => {
                 name="softwareStack"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Software Stack</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <FileStack />
+                      Software Stack
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Software stack" />
                       </SelectTrigger>
@@ -169,10 +168,6 @@ export const AddContributionFormPage = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                    <FormDescription>
-                      Select the software stack you want to contribute to the
-                      community for the selected infrastructure provider
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -184,13 +179,13 @@ export const AddContributionFormPage = () => {
                     <AccordionContent>
                       <Card>
                         <CardHeader>
-                          <CardTitle>Credentials for {stack}</CardTitle>
+                          <CardTitle className="inline-flex items-center gap-2">
+                            <KeySquare />
+                            Credentials for {stack}
+                          </CardTitle>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-2">
-                          {[
-                            SoftwareStack.Ubuntu,
-                            SoftwareStack.Debian,
-                          ].includes(
+                          {[SoftwareStack.Ubuntu, SoftwareStack.Debian].includes(
                             SoftwareStack[stack as keyof typeof SoftwareStack],
                           ) ? (
                             <>
@@ -201,14 +196,10 @@ export const AddContributionFormPage = () => {
                                   <FormItem>
                                     <FormLabel>VM Private Key</FormLabel>
                                     <FormControl>
-                                      <Input
-                                        placeholder="Your Private Key"
-                                        {...field}
-                                      />
+                                      <Input placeholder="Your Private Key" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                      Paste your VM private key here to connect
-                                      to the VM
+                                      Paste your VM private key here to connect to the VM
                                     </FormDescription>
                                     <FormMessage />
                                   </FormItem>
@@ -221,15 +212,8 @@ export const AddContributionFormPage = () => {
                                   <FormItem>
                                     <FormLabel>Port</FormLabel>
                                     <FormControl>
-                                      <Input
-                                        placeholder="Your VM  Port"
-                                        {...field}
-                                      />
+                                      <Input placeholder="Your VM  Port" {...field} />
                                     </FormControl>
-                                    <FormDescription>
-                                      Enter the port number to connect to the VM
-                                      on the host machine
-                                    </FormDescription>
 
                                     <FormMessage />
                                   </FormItem>
@@ -242,14 +226,10 @@ export const AddContributionFormPage = () => {
                                   <FormItem>
                                     <FormLabel>Database Host</FormLabel>
                                     <FormControl>
-                                      <Input
-                                        placeholder="Your VM Host"
-                                        {...field}
-                                      />
+                                      <Input placeholder="Your VM Host" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                      Enter the host name to connect to the VM
-                                      on the host machine
+                                      Enter the host name to connect to the VM on the host machine
                                     </FormDescription>
                                     <FormMessage />
                                   </FormItem>
@@ -262,15 +242,8 @@ export const AddContributionFormPage = () => {
                                   <FormItem>
                                     <FormLabel>Your Username</FormLabel>
                                     <FormControl>
-                                      <Input
-                                        placeholder="Your Username"
-                                        {...field}
-                                      />
+                                      <Input placeholder="Your Username" {...field} />
                                     </FormControl>
-                                    <FormDescription>
-                                      Enter the username to connect to the VM on
-                                      the host machine
-                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -283,19 +256,10 @@ export const AddContributionFormPage = () => {
                                 name="credentials.Connection_String"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>
-                                      Database Connection string
-                                    </FormLabel>
+                                    <FormLabel>Database Connection string</FormLabel>
                                     <FormControl>
-                                      <Input
-                                        placeholder="Your connection string"
-                                        {...field}
-                                      />
+                                      <Input placeholder="Your connection string" {...field} />
                                     </FormControl>
-                                    <FormDescription>
-                                      Paste your connection string here to
-                                      connect to the database
-                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -313,11 +277,11 @@ export const AddContributionFormPage = () => {
                 name="region"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Region</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <MapPinned />
+                      Region
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Region" />
                       </SelectTrigger>
@@ -331,10 +295,6 @@ export const AddContributionFormPage = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                    <FormDescription>
-                      Select the region you want to contribute to the community
-                      for the selected infrastructure provider
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -344,14 +304,13 @@ export const AddContributionFormPage = () => {
                 name="version"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Version</FormLabel>
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <GalleryHorizontalEnd />
+                      Version (Optional)
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Version" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Enter the version of the software stack you want to
-                      contribute to the community
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -361,14 +320,14 @@ export const AddContributionFormPage = () => {
                 name="cpu"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>CPU</FormLabel>
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <Cpu />
+                      CPU (Optional)
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="CPU" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Enter the number of CPUs you want to contribute to the
-                      community
-                    </FormDescription>
+                    <FormDescription>Enter the number of CPUs you want to contribute to the community</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -378,14 +337,13 @@ export const AddContributionFormPage = () => {
                 name="ram"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>RAM</FormLabel>
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <MemoryStick />
+                      RAM (Optional)
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Disk Size" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Enter the RAM you want to contribute to the community in
-                      GB
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -395,22 +353,19 @@ export const AddContributionFormPage = () => {
                 name="diskSizeGb"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Disk size</FormLabel>
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <HardDrive />
+                      Disk size (Optional)
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Disk size input " {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Enter the disk size you want to contribute to the
-                      community in GB
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <Button disabled={isPending}>
-                {isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
+                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Contribute
               </Button>
             </form>
