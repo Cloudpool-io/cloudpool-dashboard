@@ -5,7 +5,6 @@ import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { AwardIcon, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipWrapper } from "@/components/ui/tooltip";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export const Overview = () => {
   const { user } = useAuth();
@@ -54,10 +53,7 @@ export const Overview = () => {
         <Typography as="h2" variant="h2">
           Contributions
         </Typography>
-        <ScrollArea className="w-96 whitespace-nowrap sm:w-full">
-          <Contributions />
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        <Contributions />
       </div>
     </>
   );

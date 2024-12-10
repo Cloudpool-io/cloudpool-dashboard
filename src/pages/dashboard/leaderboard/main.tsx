@@ -6,7 +6,6 @@ import { ContributorsDataTable } from "./table/main";
 import { columns } from "./table/columns";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthProvider";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export const LeaderBoard = () => {
   const { user } = useAuth();
@@ -56,10 +55,7 @@ export const LeaderBoard = () => {
         <Typography as="h2" variant="h2">
           TOP CONTRIBUTORS
         </Typography>
-        <ScrollArea className="w-96 whitespace-nowrap sm:w-full">
-          <ContributorsDataTable data={contributors || []} columns={columns} />
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        <ContributorsDataTable data={contributors || []} columns={columns} />
       </div>
     </>
   );
