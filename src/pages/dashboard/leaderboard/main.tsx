@@ -1,7 +1,7 @@
 import { Typography } from "@/components/ui/typography";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLeaderboardContributors } from "../contributions/actions/main";
-import { LeaderBoardContributor } from "@/core/interfaces/contributor.interface";
+import { Contributor } from "@/core/interfaces/contributor.interface";
 import { ContributorsDataTable } from "./table/main";
 import { columns } from "./table/columns";
 import { useQuery } from "@tanstack/react-query";
@@ -13,15 +13,15 @@ export const LeaderBoard = () => {
     data: contributors,
     error,
     isLoading,
-  } = useQuery<LeaderBoardContributor[]>({
+  } = useQuery<Contributor[]>({
     queryKey: ["contributors"],
     queryFn: getLeaderboardContributors,
   });
 
+  console.log(user?.rank);
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  const userRank = contributors?.findIndex((c) => c.id === user?.id) || 0;
 
   if (error) {
     return <div>Error...</div>;
@@ -36,7 +36,7 @@ export const LeaderBoard = () => {
           </CardHeader>
           <CardContent>
             <Typography as="h2" variant="h2">
-              {userRank + 1}
+              {user?.rank}
             </Typography>
           </CardContent>
         </Card>

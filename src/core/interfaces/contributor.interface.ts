@@ -9,5 +9,3 @@ export interface Contributor {
   totalEarn?: string;
   rank?: number;
 }
-
-export type LeaderBoardContributor = Pick<Contributor, "id" | "email" | "activeContributions" | "totalEarn" | "rank">;

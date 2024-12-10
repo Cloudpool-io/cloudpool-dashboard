@@ -11,9 +11,9 @@ import {
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { LeaderBoardContributor } from "@/core/interfaces/contributor.interface";
+import { Contributor } from "@/core/interfaces/contributor.interface";
 
-export const columns: ColumnDef<LeaderBoardContributor>[] = [
+export const columns: ColumnDef<Contributor>[] = [
   {
     accessorKey: "rank",
     header: () => <div className="text-center">Rank</div>,
