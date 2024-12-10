@@ -15,6 +15,13 @@ import { LeaderBoardContributor } from "@/core/interfaces/contributor.interface"
 
 export const columns: ColumnDef<LeaderBoardContributor>[] = [
   {
+    accessorKey: "rank",
+    header: () => <div className="text-center">Rank</div>,
+    cell: ({ row }) => {
+      return <div className="text-center">{row.index + 1}</div>;
+    },
+  },
+  {
     accessorKey: "email",
     header: () => <div className="text-center">Email</div>,
     cell: ({ row }) => {
@@ -24,18 +31,12 @@ export const columns: ColumnDef<LeaderBoardContributor>[] = [
   {
     accessorKey: "activeContributions",
     header: () => <div className="text-center"> Active Contributions</div>,
-    cell: ({ row }) => (
-      <div className="capitalize text-center">
-        {row.original.activeContributions}
-      </div>
-    ),
+    cell: ({ row }) => <div className="text-center capitalize">{row.original.activeContributions}</div>,
   },
   {
     accessorKey: "totalEarn",
     header: () => <div className="text-center">Total Earned</div>,
-    cell: ({ row }) => (
-      <div className="capitalize text-center">{row.original.totalEarn}</div>
-    ),
+    cell: ({ row }) => <div className="text-center capitalize">{row.original.totalEarn}</div>,
   },
   {
     id: "actions",
@@ -52,11 +53,7 @@ export const columns: ColumnDef<LeaderBoardContributor>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(String(row.original.id))
-              }
-            >
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(String(row.original.id))}>
               Copy contributor ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />

@@ -7,9 +7,7 @@ export interface Contributor {
   nextReward: string;
   daysContributed: number | null;
   totalEarn?: string;
+  rank?: number;
 }
 
-export type LeaderBoardContributor = Pick<
-  Contributor,
-  "id" | "email" | "activeContributions" | "totalEarn"
->;
+export type LeaderBoardContributor = Pick<Contributor, "id" | "email" | "activeContributions" | "totalEarn" | "rank">;

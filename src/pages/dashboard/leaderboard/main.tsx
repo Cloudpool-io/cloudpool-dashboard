@@ -5,8 +5,11 @@ import { LeaderBoardContributor } from "@/core/interfaces/contributor.interface"
 import { ContributorsDataTable } from "./table/main";
 import { columns } from "./table/columns";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthProvider";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export const LeaderBoard = () => {
+  const { user } = useAuth();
   const {
     data: contributors,
     error,
@@ -19,6 +22,7 @@ export const LeaderBoard = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+  const userRank = contributors?.findIndex((c) => c.id === user?.id) || 0;
 
   if (error) {
     return <div>Error...</div>;
@@ -26,14 +30,14 @@ export const LeaderBoard = () => {
 
   return (
     <>
-      <div className="grid grid-cols-[1fr_1fr] md:grid-cols-[1fr_1fr_1fr_1fr] gap-2 md:gap-4">
+      <div className="wrap grid grid-cols-[1fr] gap-2 md:grid-cols-[1fr_1fr]">
         <Card>
           <CardHeader>
             <CardTitle>Your rank </CardTitle>
           </CardHeader>
           <CardContent>
             <Typography as="h2" variant="h2">
-              1/100
+              {userRank + 1}
             </Typography>
           </CardContent>
         </Card>
@@ -43,7 +47,7 @@ export const LeaderBoard = () => {
           </CardHeader>
           <CardContent>
             <Typography as="h2" variant="h2">
-              100
+              {contributors?.length || 0}
             </Typography>
           </CardContent>
         </Card>
@@ -52,7 +56,10 @@ export const LeaderBoard = () => {
         <Typography as="h2" variant="h2">
           TOP CONTRIBUTORS
         </Typography>
-        <ContributorsDataTable data={contributors || []} columns={columns} />
+        <ScrollArea className="w-96 whitespace-nowrap sm:w-full">
+          <ContributorsDataTable data={contributors || []} columns={columns} />
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </div>
     </>
   );

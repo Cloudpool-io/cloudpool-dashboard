@@ -4,33 +4,31 @@ import { Contributions } from "../contributions/main";
 import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { AwardIcon, Info } from "lucide-react";
-import { TooltipWrapper } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipWrapper } from "@/components/ui/tooltip";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export const Overview = () => {
   const { user } = useAuth();
 
   return (
     <>
-      <div className="grid grid-cols-[1fr_1fr] md:grid-cols-[1fr_1fr_1fr_1fr] gap-2 md:gap-4">
+      <div className="wrap grid grid-cols-[1fr] gap-2 md:grid-cols-[1fr_1fr]">
         <Card>
           <CardHeader className="flex flex-col gap-1">
-            <CardTitle className="inline-flex gap-2 items-center justify-between ">
-              <div>Total Rewards Info:</div>
-              <TooltipWrapper content="Total rewards info is composed as xx/yy where xx is a total earned points and yy is a total days contributed">
-                <Info />
-              </TooltipWrapper>
+            <CardTitle className="inline-flex items-center justify-between gap-2">
+              <div>Total Contribution Info:</div>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Typography as="h2" variant="h2">
-              {user?.earned} / {user?.daysContributed} days
+              {user?.earned} points / {user?.daysContributed} days
             </Typography>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-col gap-1">
-            <CardTitle className="inline-flex gap-2 items-center justify-between">
-              <div>NFT Badge Minted Info:</div>
+            <CardTitle className="inline-flex items-center justify-between gap-2">
+              <div>NFT Badge Info:</div>
               <TooltipWrapper content="Contribute a resource for at least 30 days to earn a Contributor NFT badge.">
                 <Info />
               </TooltipWrapper>
@@ -38,7 +36,16 @@ export const Overview = () => {
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
             <AwardIcon className="bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80" />
-            <Button disabled={Number(user?.daysContributed) < 30}>Mint</Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild className="w-full">
+                  <div className="flex w-full flex-auto">
+                    <Button disabled={Number(user?.daysContributed) < 30}>Mint</Button>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Your are not eligible yet</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </CardContent>
         </Card>
       </div>
@@ -47,7 +54,10 @@ export const Overview = () => {
         <Typography as="h2" variant="h2">
           Contributions
         </Typography>
-        <Contributions />
+        <ScrollArea className="w-96 whitespace-nowrap sm:w-full">
+          <Contributions />
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </div>
     </>
   );
