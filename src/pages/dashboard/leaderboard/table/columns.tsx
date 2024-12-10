@@ -18,7 +18,7 @@ export const columns: ColumnDef<LeaderBoardContributor>[] = [
     accessorKey: "rank",
     header: () => <div className="text-center">Rank</div>,
     cell: ({ row }) => {
-      return <div className="text-center">{row.index + 1}</div>;
+      return <div className="text-center">{row.original.rank}</div>;
     },
   },
   {
