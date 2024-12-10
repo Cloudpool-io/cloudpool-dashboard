@@ -13,4 +13,5 @@ export interface Contribution {
   earnedAmount: number;
   reward: string;
   timeLeftToReward: number;
+  daysContributed: string;
 }
