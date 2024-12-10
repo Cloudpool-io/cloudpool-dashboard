@@ -19,15 +19,7 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../../../../components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../components/ui/form";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Region } from "@/core/enums/Region.enum";
 import { SoftwareStack } from "@/core/enums/SoftwareStack.enum";
@@ -198,9 +190,6 @@ export const AddContributionFormPage = () => {
                                     <FormControl>
                                       <Input placeholder="Your Private Key" {...field} />
                                     </FormControl>
-                                    <FormDescription>
-                                      Paste your VM private key here to connect to the VM
-                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -228,9 +217,6 @@ export const AddContributionFormPage = () => {
                                     <FormControl>
                                       <Input placeholder="Your VM Host" {...field} />
                                     </FormControl>
-                                    <FormDescription>
-                                      Enter the host name to connect to the VM on the host machine
-                                    </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -327,7 +313,6 @@ export const AddContributionFormPage = () => {
                     <FormControl>
                       <Input placeholder="CPU" {...field} />
                     </FormControl>
-                    <FormDescription>Enter the number of CPUs you want to contribute to the community</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
