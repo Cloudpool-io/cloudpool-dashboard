@@ -5,13 +5,42 @@ import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { AwardIcon, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipWrapper } from "@/components/ui/tooltip";
+import { FC } from "react";
+import { useNavigate } from "react-router";
+interface RewardProps {
+  color: string;
+  label: string;
+}
+const Reward: FC<RewardProps> = ({ color, label }) => {
+  return (
+    <div className="relative inline-flex flex-1 items-center rounded-lg border p-1">
+      {/* Badge Icon */}
+      <AwardIcon color={color} size={24} className="opacity-50" />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gray-400 opacity-40" />
+      {/* Label */}
+      <span className="ml-2 text-sm text-gray-500">{label}</span>
+    </div>
+  );
+};
+
+const RewardList = () => {
+  return (
+    <div className="flex items-center gap-4">
+      <Reward color="#cd7f32" label="Bronze" />
+      <Reward color="#c0c0c0" label="Silver" />
+      <Reward color="#ffd700" label="Gold" />
+    </div>
+  );
+};
 
 export const Overview = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <>
-      <div className="wrap grid grid-cols-[1fr] gap-2 md:grid-cols-[1fr_1fr]">
+      <div className="wrap grid grid-cols-[1fr] gap-2 lg:grid-cols-[1fr_1fr_1fr]">
         <Card>
           <CardHeader className="flex flex-col gap-1">
             <CardTitle className="inline-flex items-center justify-between gap-2">
@@ -27,6 +56,21 @@ export const Overview = () => {
         <Card>
           <CardHeader className="flex flex-col gap-1">
             <CardTitle className="inline-flex items-center justify-between gap-2">
+              <div>Contributor ranking:</div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col">
+            <Typography as="h2" variant="h2">
+              {user?.rank}
+            </Typography>
+            <Button className="flex-grow" onClick={() => navigate("/dashboard/leaderboard")}>
+              Go to Leaderboard
+            </Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-col gap-1">
+            <CardTitle className="inline-flex items-center justify-between gap-2">
               <div>NFT Badge Info:</div>
               <TooltipWrapper content="Contribute a resource for at least 30 days to earn a Contributor NFT badge.">
                 <Info />
@@ -34,12 +78,14 @@ export const Overview = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
-            <AwardIcon className="bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80" />
+            <RewardList />
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild className="w-full">
-                  <div className="flex w-full flex-auto">
-                    <Button disabled={Number(user?.daysContributed) < 30}>Mint</Button>
+                <TooltipTrigger asChild>
+                  <div className="flex cursor-pointer">
+                    <Button className="flex-grow" disabled={Number(user?.daysContributed) < 30}>
+                      Mint
+                    </Button>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>Your are not eligible yet</TooltipContent>

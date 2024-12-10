@@ -21,9 +21,7 @@ import { queryClient } from "@/main";
 interface ContributionsActionsProps {
   contribution: Contribution;
 }
-export const ContributionsActions: FC<ContributionsActionsProps> = ({
-  contribution,
-}) => {
+export const ContributionsActions: FC<ContributionsActionsProps> = ({ contribution }) => {
   const { toast } = useToast();
   const { mutate } = useMutation({
     mutationFn: removeContribution,
@@ -48,23 +46,15 @@ export const ContributionsActions: FC<ContributionsActionsProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" size="icon">
           <span className="sr-only">Open menu</span>
           <MoreHorizontal />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(String(contribution.id))}
-        >
-          Copy contributor ID
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>View contribution details</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => mutate(String(contribution.id))}>
-          Cancel
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => mutate(String(contribution.id))}>Cancel</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

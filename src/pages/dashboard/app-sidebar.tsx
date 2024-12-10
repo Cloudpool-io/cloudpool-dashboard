@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Cloud, Home } from "lucide-react";
+import { Cloud, Home, Trophy } from "lucide-react";
 
 import {
   Sidebar,
@@ -18,20 +18,15 @@ import { Typography } from "@/components/ui/typography";
 const data = {
   navMain: [
     {
-      title: "Main",
-      url: "/dashboard",
+      title: "Overview",
+      url: "/dashboard/overview",
       icon: Home,
       isActive: true,
-      items: [
-        {
-          title: "Overview",
-          url: "/dashboard/overview",
-        },
-        {
-          title: "Leaderboard",
-          url: "/dashboard/leaderboard",
-        },
-      ],
+    },
+    {
+      title: "Leaderboard",
+      url: "/dashboard/leaderboard",
+      icon: Trophy,
     },
   ],
 };
@@ -41,7 +36,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <div className="inline-flex gap-2 items-center">
+        <div className="inline-flex items-center gap-2">
           <Cloud size={40} />
           {state === "expanded" && (
             <Typography as="h3" variant="h3">
