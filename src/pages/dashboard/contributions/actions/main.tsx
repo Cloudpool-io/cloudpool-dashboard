@@ -20,3 +20,11 @@ export const addContribution = async (form: contributionFormInputs) => {
   const { data } = await client.post("/contributions", form);
   return data;
 };
+
+export const checkContribution = async (form: {
+  softwareStack: string;
+  credentials: { Connection_String?: string };
+}) => {
+  const { data } = await client.post("/contributions/info", form);
+  return data;
+};

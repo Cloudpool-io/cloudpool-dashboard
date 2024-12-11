@@ -26,11 +26,12 @@ import { SoftwareStack } from "@/core/enums/SoftwareStack.enum";
 import { contributionFormInputs, contributionSchema } from "./form/main";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useMutation } from "@tanstack/react-query";
-import { addContribution } from "../actions/main";
+import { addContribution, checkContribution } from "../actions/main";
 import { useToast } from "@/hooks/use-toast";
 import { CustomAxiosError } from "@/core/interfaces/error.interface";
 import { Combobox } from "@/components/ui/combobox";
 import { InfraProviderEnum } from "@/core/enums/InfraProvider.enum";
+import { infrastuctureProvidersLogosMap } from "@/core/maps/mains";
 
 const DEFAULT_CONTRIBUTION_FORM_VALUES = {
   name: "",
@@ -61,7 +62,7 @@ export const AddContributionFormPage = () => {
 
   const stack = form.watch("softwareStack");
   const { toast } = useToast();
-  const { mutate, isPending } = useMutation({
+  const { mutate: addContributionMutate, isPending: addContributionPending } = useMutation({
     mutationFn: addContribution,
     onSuccess: () => {
       toast({
@@ -81,25 +82,71 @@ export const AddContributionFormPage = () => {
     },
   });
 
+  const { mutate: checkContributionMutate, isPending: checkContributionPending } = useMutation({
+    mutationFn: checkContribution,
+    onSuccess: (data: { version?: string; cpu?: number; ram?: number; diskSizeGb?: number }) => {
+      if (data?.version) {
+        form.setValue("version", data.version);
+      }
+      if (data?.cpu) {
+        form.setValue("cpu", data.cpu);
+      }
+      if (data?.ram) {
+        form.setValue("ram", data.ram);
+      }
+      if (data?.diskSizeGb) {
+        form.setValue("diskSizeGb", data.diskSizeGb);
+      }
+      toast({
+        title: "Success",
+        description: "You have successfullya checked a contribution ",
+      });
+    },
+    onError: (error: CustomAxiosError) => {
+      if (error.response?.data.code) {
+        toast({
+          title: "Failed",
+          description: error.response.data.message,
+          variant: "destructive",
+        });
+      }
+    },
+  });
+
   const onSubmit = async (form: contributionFormInputs) => {
-    mutate(form);
+    addContributionMutate(form);
+  };
+
+  const checkProductContribution = async (form: {
+    softwareStack: SoftwareStack;
+    credentials: { Connection_String?: string; Private_Key?: string; Host?: string; Port?: string; Username?: string };
+  }) => {
+    if ([SoftwareStack.Debian, SoftwareStack.Ubuntu].includes(form.softwareStack)) {
+      checkContributionMutate(form);
+    } else {
+      checkContributionMutate(form);
+    }
   };
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <NavLink to="/dashboard/overview">
+      <Card className="max-w-screen-md">
+        <div className="flex items-center p-6">
+          <NavLink to="/dashboard/overview" className="flex-auto">
             <Button>
               <ChevronLeftIcon />
               Go Back
             </Button>
           </NavLink>
-          <CardTitle className="text-lg">Add Contribution</CardTitle>
+          <Button onClick={() => form.reset()}>Reset form</Button>
+        </div>
+
+        <CardHeader>
+          <CardTitle>Add Contribution</CardTitle>
         </CardHeader>
-        <CardContent className="mt-4">
+        <CardContent>
           <Form {...form}>
-            <form className="grid-cols-auto grid max-w-screen-md gap-2" onSubmit={handleSubmit(onSubmit)}>
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="infraProvider"
@@ -111,9 +158,19 @@ export const AddContributionFormPage = () => {
                     </FormLabel>
                     <FormControl>
                       <Combobox
-                        fieldValue={field.value}
-                        options={Object.keys(InfraProviderEnum)}
-                        onChange={(value) => field.onChange(value)}
+                        defaultValue={field.value}
+                        options={Object.keys(InfraProviderEnum).map((key) => ({
+                          value: key,
+                          label: InfraProviderEnum[key as keyof typeof InfraProviderEnum],
+                          image: infrastuctureProvidersLogosMap.get(
+                            InfraProviderEnum[key as keyof typeof InfraProviderEnum],
+                          ) as string,
+                        }))}
+                        onInputChange={field.onChange}
+                        onValueChange={field.onChange}
+                        selectedOptionPlaceholder="Select or type a resource group"
+                        selectedValuePlaceholder="Select an exiting group or create a new one by typing its name"
+                        notFoundMessage="Your new resource group will be created"
                       />
                     </FormControl>
                     <FormMessage />
@@ -234,6 +291,24 @@ export const AddContributionFormPage = () => {
                                   </FormItem>
                                 )}
                               />
+                              <Button
+                                type="button"
+                                disabled={checkContributionPending}
+                                onClick={() =>
+                                  checkProductContribution({
+                                    softwareStack: form.getValues("softwareStack") as SoftwareStack,
+                                    credentials: {
+                                      Username: form.getValues("credentials.Username"),
+                                      Host: form.getValues("credentials.Host"),
+                                      Port: form.getValues("credentials.Port"),
+                                      Private_Key: form.getValues("credentials.Private_Key"),
+                                    },
+                                  })
+                                }
+                              >
+                                {checkContributionPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                Check connection
+                              </Button>
                             </>
                           ) : (
                             <>
@@ -250,6 +325,19 @@ export const AddContributionFormPage = () => {
                                   </FormItem>
                                 )}
                               />
+                              <Button
+                                type="button"
+                                disabled={checkContributionPending}
+                                onClick={() =>
+                                  checkProductContribution({
+                                    softwareStack: form.getValues("softwareStack") as SoftwareStack,
+                                    credentials: { Connection_String: form.getValues("credentials.Connection_String") },
+                                  })
+                                }
+                              >
+                                {checkContributionPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                Check connection
+                              </Button>
                             </>
                           )}
                         </CardContent>
@@ -349,8 +437,8 @@ export const AddContributionFormPage = () => {
                   </FormItem>
                 )}
               />
-              <Button disabled={isPending}>
-                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              <Button disabled={addContributionPending}>
+                {addContributionPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Contribute
               </Button>
             </form>

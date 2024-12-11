@@ -1,3 +1,4 @@
+import { Contributor } from "@/core/interfaces/contributor.interface";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -13,10 +14,11 @@ export const clearAuthData = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("user");
 };
-
-export const getAuthData = () => ({
+type AuthData = {
+  token: string | null;
+  user: Contributor | null;
+};
+export const getAuthData = (): AuthData => ({
   token: localStorage.getItem("accessToken"),
-  user: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user") as string)
-    : null,
+  user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null,
 });

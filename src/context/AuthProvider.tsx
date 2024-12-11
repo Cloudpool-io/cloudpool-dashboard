@@ -1,12 +1,12 @@
-import { createContext, FC, useContext, useEffect, useState } from "react";
+import { createContext, FC, useContext, useEffect, useMemo, useState } from "react";
 import { clearAuthData, getAuthData } from "@/lib/utils";
 import { Contributor } from "@/core/interfaces/contributor.interface";
 
 const AuthContext = createContext<AuthContextType>({
   token: null,
   user: null,
-  setToken: () => { },
-  logout: () => { },
+  setToken: () => {},
+  logout: () => {},
 });
 
 interface AuthContextType {
@@ -20,15 +20,12 @@ interface AuthProviderProps {
 }
 
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("accessToken"),
-  );
+  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<Contributor | null>(null);
 
-  const logout = () => {
-    clearAuthData();
-    setToken(null);
-  };
+  useEffect(() => {
+    setToken(localStorage.getItem("accessToken"));
+  }, []);
 
   useEffect(() => {
     const { token, user } = getAuthData();
@@ -36,16 +33,22 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     setUser(user);
   }, []);
 
-  const contextValue: AuthContextType = {
-    setToken,
-    token,
-    logout,
-    user,
+  const logout = () => {
+    clearAuthData();
+    setToken(null);
   };
 
-  return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  const contextValue: AuthContextType = useMemo(
+    () => ({
+      token,
+      user,
+      setToken,
+      logout,
+    }),
+    [token, user],
   );
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

@@ -1,72 +1,79 @@
 import { Check, ChevronsUpDown } from "lucide-react";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Button } from "./button";
-import { FC } from "react";
-
+import { Button } from "@/components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { FC, useState } from "react";
+import { VercelLogoIcon } from "@radix-ui/react-icons";
 
 interface ComboboxProps {
-  fieldValue: string;
-  options: string[];
-  onChange: (value: string) => void;
+  defaultValue: string;
+  options: { value: string; label: string; image?: string }[];
+  notFoundMessage: string;
+  selectedOptionPlaceholder: string;
+  selectedValuePlaceholder?: string;
+  onInputChange: (value: string) => void;
+  onValueChange: (value: string) => void;
 }
 
 export const Combobox: FC<ComboboxProps> = ({
-  fieldValue,
   options,
-  onChange,
+  selectedValuePlaceholder,
+  selectedOptionPlaceholder,
+  notFoundMessage,
+  defaultValue,
+  onInputChange,
+  onValueChange,
 }) => {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(defaultValue);
+  const [input, setInput] = useState(defaultValue);
+
+  const handleInputChange = (inputValue: string) => {
+    setInput(inputValue);
+    onInputChange(inputValue);
+
+    const matchedOption = options.find((option) => option.value === inputValue);
+    if (matchedOption) {
+      setValue(matchedOption.value);
+      onValueChange(matchedOption.value);
+      onInputChange(matchedOption.value);
+    } else {
+      setValue(inputValue);
+    }
+  };
+
+  const handleOptionSelect = (selectedValue: string) => {
+    setValue(selectedValue);
+    setInput("");
+    onValueChange(selectedValue);
+    setOpen(false);
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          className={cn(
-            "justify-between",
-            !fieldValue && "text-muted-foreground",
-          )}
-        >
-          {fieldValue
-            ? options.find((option) => option === fieldValue)
-            : "Select Infrastructure Provider"}
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+          <span>{value || selectedValuePlaceholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="PopoverContent">
+      <PopoverContent className="PopoverContent p-0">
         <Command>
-          <CommandInput placeholder="Search language..." />
+          <CommandInput placeholder={selectedOptionPlaceholder} value={input} onValueChange={handleInputChange} />
           <CommandList>
-            <CommandEmpty>No infrastructure provider found.</CommandEmpty>
+            <CommandEmpty>{notFoundMessage}</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
-                <CommandItem
-                  value={option}
-                  key={option}
-                  onSelect={() => {
-                    onChange(option);
-                  }}
-                >
-                  {option}
-                  <Check
-                    className={cn(
-                      "ml-auto",
-                      option === fieldValue ? "opacity-100" : "opacity-0",
-                    )}
-                  />
+                <CommandItem key={option.value} value={option.value} onSelect={() => handleOptionSelect(option.value)}>
+                  <Check className={cn("mr-2 h-4 w-4", option.value === value ? "opacity-100" : "opacity-0")} />
+                  {option.image ? (
+                    <img src={option.image} width="20" height="20" />
+                  ) : (
+                    <VercelLogoIcon className="h-[20px] w-[20px]" />
+                  )}
+                  {option.value}
                 </CommandItem>
               ))}
             </CommandGroup>
