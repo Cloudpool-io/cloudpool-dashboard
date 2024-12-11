@@ -20,6 +20,9 @@ interface AuthProviderProps {
 }
 
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get("code");
+  console.log(code);
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<Contributor | null>(null);
 
