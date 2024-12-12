@@ -3,5 +3,5 @@ import { Navigate, Outlet } from "react-router";
 
 export const PublicRoute = () => {
   const { token } = useAuth();
-  return token ? <Navigate to="/dashboard" replace /> : <Outlet />;
+  return token ? <Navigate to="/dashboard/overview" /> : <Outlet />;
 };

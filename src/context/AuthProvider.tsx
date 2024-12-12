@@ -23,12 +23,8 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get("code");
   console.log(code);
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(localStorage.getItem("accessToken"));
   const [user, setUser] = useState<Contributor | null>(null);
-
-  useEffect(() => {
-    setToken(localStorage.getItem("accessToken"));
-  }, []);
 
   useEffect(() => {
     const { token, user } = getAuthData();

@@ -23,18 +23,14 @@ export const Router = () => {
         </Route>
 
         <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route path="dashboard" element={<DashboardLayout />}>
             <Route index element={<Navigate to="overview" replace />} />
+
             <Route path="overview" element={<Overview />} />
             <Route path="leaderboard" element={<LeaderBoard />} />
-            <Route
-              path="contribute/add"
-              element={<AddContributionFormPage />}
-            />
+            <Route path="contribute/add" element={<AddContributionFormPage />} />
           </Route>
         </Route>
-
-        <Route path="*" element={<Navigate to="/auth/login" replace />} />
       </Route>
     </Routes>
   );

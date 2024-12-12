@@ -31,10 +31,10 @@ export const LeaderBoard = () => {
       <div className="wrap grid grid-cols-[1fr] gap-2 md:grid-cols-[1fr_1fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Your rank </CardTitle>
+            <CardTitle>Your Rank </CardTitle>
           </CardHeader>
           <CardContent>
-            <Typography as="h2" variant="h2">
+            <Typography as="h2" variant="h2" className="text-center">
               {user?.rank}
             </Typography>
           </CardContent>
@@ -44,7 +44,7 @@ export const LeaderBoard = () => {
             <CardTitle>Total Contributors:</CardTitle>
           </CardHeader>
           <CardContent>
-            <Typography as="h2" variant="h2">
+            <Typography as="h2" variant="h2" className="text-center">
               {contributors?.length || 0}
             </Typography>
           </CardContent>

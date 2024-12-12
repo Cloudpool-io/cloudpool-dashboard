@@ -41,14 +41,14 @@ export const Overview = () => {
   return (
     <>
       <div className="wrap grid grid-cols-[1fr] gap-2 lg:grid-cols-[1fr_1fr_1fr]">
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader className="flex flex-col gap-1">
             <CardTitle className="inline-flex items-center justify-between gap-2">
               <div>Total Contribution Info:</div>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Typography as="h2" variant="h2">
+            <Typography as="h2" variant="h2" className="text-center">
               {user?.earned} points / {user?.daysContributed} days
             </Typography>
           </CardContent>
@@ -56,11 +56,11 @@ export const Overview = () => {
         <Card>
           <CardHeader className="flex flex-col gap-1">
             <CardTitle className="inline-flex items-center justify-between gap-2">
-              <div>Contributor ranking:</div>
+              <div>Contributor Ranking:</div>
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col">
-            <Typography as="h2" variant="h2">
+            <Typography as="h2" variant="h2" className="text-center">
               {user?.rank}
             </Typography>
             <Button className="flex-grow" onClick={() => navigate("/dashboard/leaderboard")}>

@@ -6,6 +6,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { FC, useState } from "react";
 import { VercelLogoIcon } from "@radix-ui/react-icons";
+import { infrastuctureProvidersLogosMap } from "@/core/maps/main";
 
 interface ComboboxProps {
   defaultValue: string;
@@ -50,12 +51,16 @@ export const Combobox: FC<ComboboxProps> = ({
     onValueChange(selectedValue);
     setOpen(false);
   };
+  console.log(value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
-          <span>{value || selectedValuePlaceholder}</span>
+          <div className="inline-flex items-center gap-2">
+            {value && <img src={infrastuctureProvidersLogosMap.get(value)} width={20} height={20} />}
+            {value || selectedValuePlaceholder}
+          </div>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

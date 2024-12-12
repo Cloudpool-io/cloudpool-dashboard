@@ -31,7 +31,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CustomAxiosError } from "@/core/interfaces/error.interface";
 import { Combobox } from "@/components/ui/combobox";
 import { InfraProviderEnum } from "@/core/enums/InfraProvider.enum";
-import { infrastuctureProvidersLogosMap } from "@/core/maps/mains";
+import { infrastuctureProvidersLogosMap, softwareStackLogosMap } from "@/core/maps/main";
 
 const DEFAULT_CONTRIBUTION_FORM_VALUES = {
   name: "",
@@ -99,7 +99,7 @@ export const AddContributionFormPage = () => {
       }
       toast({
         title: "Success",
-        description: "You have successfullya checked a contribution ",
+        description: "Connection successful",
       });
     },
     onError: (error: CustomAxiosError) => {
@@ -148,53 +148,6 @@ export const AddContributionFormPage = () => {
           <Form {...form}>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
               <FormField
-                control={form.control}
-                name="infraProvider"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel className="inline-flex items-center gap-2">
-                      <CloudCog />
-                      Infrastructure Provider (Optinal)
-                    </FormLabel>
-                    <FormControl>
-                      <Combobox
-                        defaultValue={field.value}
-                        options={Object.keys(InfraProviderEnum).map((key) => ({
-                          value: key,
-                          label: InfraProviderEnum[key as keyof typeof InfraProviderEnum],
-                          image: infrastuctureProvidersLogosMap.get(
-                            InfraProviderEnum[key as keyof typeof InfraProviderEnum],
-                          ) as string,
-                        }))}
-                        onInputChange={field.onChange}
-                        onValueChange={field.onChange}
-                        selectedOptionPlaceholder="Select or type a resource group"
-                        selectedValuePlaceholder="Select an exiting group or create a new one by typing its name"
-                        notFoundMessage="Your new resource group will be created"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="inline-flex items-center gap-2">
-                      <MonitorCog />
-                      Machine Configuration Name (Optinal)
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Type your custom name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
                 control={control}
                 name="softwareStack"
                 render={({ field }) => (
@@ -211,7 +164,16 @@ export const AddContributionFormPage = () => {
                         <SelectGroup>
                           {Object.entries(SoftwareStack).map(([key, value]) => (
                             <SelectItem key={key} value={value}>
-                              {value}
+                              <div className="inline-flex items-center gap-2">
+                                {key && value && (
+                                  <img
+                                    width="20"
+                                    height="20"
+                                    src={softwareStackLogosMap.get(value as keyof typeof SoftwareStack)}
+                                  />
+                                )}
+                                {value}
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -346,6 +308,54 @@ export const AddContributionFormPage = () => {
                   </AccordionItem>
                 </Accordion>
               )}
+
+              <FormField
+                control={form.control}
+                name="infraProvider"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <CloudCog />
+                      Infrastructure Provider
+                    </FormLabel>
+                    <FormControl>
+                      <Combobox
+                        defaultValue={field.value}
+                        options={Object.entries(InfraProviderEnum).map(([key, value]) => ({
+                          value: value,
+                          label: InfraProviderEnum[key as keyof typeof InfraProviderEnum],
+                          image: infrastuctureProvidersLogosMap.get(
+                            InfraProviderEnum[key as keyof typeof InfraProviderEnum],
+                          ) as string,
+                        }))}
+                        onInputChange={field.onChange}
+                        onValueChange={field.onChange}
+                        selectedOptionPlaceholder="Select or type a provider"
+                        selectedValuePlaceholder="Select an existing provider or create a new one by typing its name"
+                        notFoundMessage={`Your provider will be used ${field.value}`}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="inline-flex items-center gap-2">
+                      <MonitorCog />
+                      Machine Configuration Name (Optional)
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Type your custom name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={control}
                 name="region"
@@ -380,7 +390,7 @@ export const AddContributionFormPage = () => {
                   <FormItem>
                     <FormLabel className="inline-flex items-center gap-2">
                       <GalleryHorizontalEnd />
-                      Version (Optional)
+                      Version
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="Version" {...field} />
@@ -396,7 +406,7 @@ export const AddContributionFormPage = () => {
                   <FormItem>
                     <FormLabel className="inline-flex items-center gap-2">
                       <Cpu />
-                      CPU (Optional)
+                      CPU
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="CPU" {...field} />
@@ -412,7 +422,7 @@ export const AddContributionFormPage = () => {
                   <FormItem>
                     <FormLabel className="inline-flex items-center gap-2">
                       <MemoryStick />
-                      RAM (Optional)
+                      RAM
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="Disk Size" {...field} />
@@ -428,7 +438,7 @@ export const AddContributionFormPage = () => {
                   <FormItem>
                     <FormLabel className="inline-flex items-center gap-2">
                       <HardDrive />
-                      Disk size (Optional)
+                      Disk size
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="Disk size input " {...field} />
