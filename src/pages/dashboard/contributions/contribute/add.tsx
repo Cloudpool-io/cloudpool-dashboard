@@ -438,7 +438,7 @@ export const AddContributionFormPage = () => {
                   <FormItem>
                     <FormLabel className="inline-flex items-center gap-2">
                       <HardDrive />
-                      Disk size
+                      Disk Size
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="Disk size input " {...field} />

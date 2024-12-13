@@ -13,7 +13,7 @@ export const columns: ColumnDef<Contribution>[] = [
   },
   {
     accessorKey: "cpu",
-    header: () => <div className="text-center">CPU/RAM/Disk size</div>,
+    header: () => <div className="text-center">CPU / RAM / Disk size</div>,
     cell: ({ row }) => (
       <div className="text-center">
         {row.original.ram} core(s) / {row.original.ram} GB / {row.original.diskSizeGb} GB
