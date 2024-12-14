@@ -33,6 +33,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     if (code) {
       client.get(`/auth/login/github?${code}`).then((data) => {
         if (data.data) {
+          setToken(data.data.accessToken);
           navigate("/dashboard/overview");
         }
       });
