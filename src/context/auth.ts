@@ -30,3 +30,8 @@ export const getMe = async () => {
   localStorage.setItem("user", JSON.stringify(data));
   return data;
 };
+
+export const githubSignIn = async (code: string) => {
+  const { data } = await client.get(`/auth/login/github?${code}`);
+  return data;
+};

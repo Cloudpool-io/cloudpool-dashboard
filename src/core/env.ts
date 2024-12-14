@@ -6,6 +6,6 @@ export const env = {
       : import.meta.env.VITE_PROD_GITHUB_CLIENT_ID,
   github_redirect_uri:
     import.meta.env.VITE_MODE_DEV === "true"
-      ? import.meta.env.VITE_DEV_GITHUB_SECRET
-      : import.meta.env.VITE_PROD_GITHUB_SECRET,
+      ? import.meta.env.VITE_DEV_GITHUB_CALLBACK_URL
+      : import.meta.env.VITE_PROD_GITHUB_CALLBACK_URL,
 };
