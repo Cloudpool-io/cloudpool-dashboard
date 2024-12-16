@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { client } from "@/core/axios/main";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/context/AuthProvider";
+import { saveAuthData } from "@/lib/utils";
 
 export const Redirection = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export const Redirection = () => {
     const githubAuth = async () => {
       await client.get(`/auth/login/github?${urlParams.toString()}`).then((data) => {
         if (data.data) {
-          setToken(data.data.accessToken);
+          saveAuthData(data.data.accessToken);
           navigate("/dashboard/overview");
         }
       });
