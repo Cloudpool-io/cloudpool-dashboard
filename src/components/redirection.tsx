@@ -10,9 +10,11 @@ export const Redirection = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
+    console.log(code);
 
     const githubAuth = async () => {
-      client.get(`/auth/login/github?${code}`).then((data) => {
+      await client.get(`/auth/login/github?${code}`).then((data) => {
+        console.log(data);
         if (data.data) {
           setToken(data.data.accessToken);
           navigate("/dashboard/overview");
