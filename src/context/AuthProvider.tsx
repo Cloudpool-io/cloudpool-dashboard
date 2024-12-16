@@ -1,7 +1,6 @@
 import { createContext, FC, useContext, useEffect, useMemo, useState } from "react";
 import { clearAuthData, getAuthData } from "@/lib/utils";
 import { Contributor } from "@/core/interfaces/contributor.interface";
-import { client } from "@/core/axios/main";
 import { useNavigate } from "react-router";
 
 const AuthContext = createContext<AuthContextType>({
@@ -27,21 +26,9 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-
-    if (code) {
-      client.get(`/auth/login/github?${code}`).then((data) => {
-        if (data.data) {
-          setToken(data.data.accessToken);
-          navigate("/dashboard/overview");
-        }
-      });
-    } else {
-      const { token, user } = getAuthData();
-      setToken(token);
-      setUser(user);
-    }
+    const { token, user } = getAuthData();
+    setToken(token);
+    setUser(user);
   }, [navigate]);
 
   const logout = () => {
