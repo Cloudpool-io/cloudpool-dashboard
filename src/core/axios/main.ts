@@ -2,6 +2,10 @@ import axios from "axios";
 import { env } from "../env";
 export const client = axios.create({
   baseURL: env.api,
+  headers: {
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
 });
 
 client.interceptors.request.use(

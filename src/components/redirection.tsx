@@ -11,12 +11,15 @@ export const Redirection = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
 
-    client.get(`/auth/login/github?${code}`).then((data) => {
-      if (data.data) {
-        setToken(data.data.accessToken);
-        navigate("/dashboard/overview");
-      }
-    });
+    const githubAuth = async () => {
+      client.get(`/auth/login/github?${code}`).then((data) => {
+        if (data.data) {
+          setToken(data.data.accessToken);
+          navigate("/dashboard/overview");
+        }
+      });
+    };
+    githubAuth();
   }, [navigate, setToken]);
 
   return <div>You are redirected to the Dashboard</div>;
