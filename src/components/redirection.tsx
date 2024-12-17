@@ -15,10 +15,12 @@ export const Redirection = () => {
     const code = urlParams.get("code");
 
     const githubAuth = async () => {
-      client.get(`/auth/login/github?${code}`).then((data) => {
+      await client.get(`/auth/login/github?${code}`).then((data) => {
+        console.log(data);
         if (data.data) {
           saveAuthData(data.data.accessToken);
           getMe().then((user: Contributor) => {
+            console.log(user);
             setToken(data.data.accessToken);
             setUser(user);
             navigate("/dashboard/overview");
