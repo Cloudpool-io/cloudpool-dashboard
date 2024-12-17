@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "@/context/AuthProvider";
 import { getMe } from "@/api/auth/authService";
 import { Contributor } from "@/core/interfaces/contributor.interface";
+import { saveAuthData } from "@/lib/utils";
 
 export const Redirection = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export const Redirection = () => {
     const githubAuth = async () => {
       client.get(`/auth/login/github?${code}`).then((data) => {
         if (data.data) {
+          saveAuthData(data.data.accessToken);
           getMe().then((user: Contributor) => {
             setToken(data.data.accessToken);
             setUser(user);
