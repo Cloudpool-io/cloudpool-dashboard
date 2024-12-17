@@ -29,7 +29,7 @@ export const getMe = async () => {
   return data;
 };
 
-export const githubSignIn = async (code: string) => {
-  const { data } = await client.get(`/auth/login/github?${code}`);
+export const githubSignIn = async (params: string) => {
+  const { data } = await client.get(`/auth/login/github?${params}`);
   return data;
 };

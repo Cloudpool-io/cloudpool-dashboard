@@ -11,7 +11,7 @@ import { Typography } from "@/components/ui/typography";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { CustomAxiosError } from "@/core/interfaces/error.interface";
-import { signUp } from "@/context/auth";
+import { signUp } from "@/api/auth/authService";
 
 export const Register = () => {
   const form = useForm({

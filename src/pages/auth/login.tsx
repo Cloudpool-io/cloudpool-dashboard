@@ -13,9 +13,11 @@ import { loginFormInputs, loginSchema } from "./form";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
 import { useMutation } from "@tanstack/react-query";
-import { getMe, signIn } from "@/context/auth";
 import { CustomAxiosError } from "@/core/interfaces/error.interface";
 import { GithubLoginButton } from "./github-login-button";
+import { Contributor } from "@/core/interfaces/contributor.interface";
+import { getMe, signIn } from "@/api/auth/authService";
+import { saveAuthData } from "@/lib/utils";
 
 export const Login = () => {
   const form = useForm({
@@ -36,11 +38,14 @@ export const Login = () => {
         title: "Success",
         description: "You have logged in successfully",
       });
-      getMe().then((user) => {
-        setToken(data.accessToken);
-        setUser(user);
-        navigate("/dashboard/overview");
-      });
+      if (data) {
+        saveAuthData(data.accessToken);
+        getMe().then((user: Contributor) => {
+          setToken(data?.accessToken);
+          setUser(user);
+          navigate("/dashboard/overview");
+        });
+      }
     },
     onError: (error: CustomAxiosError) => {
       if (error.response?.data.code) {
