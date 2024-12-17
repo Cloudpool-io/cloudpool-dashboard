@@ -25,8 +25,6 @@ export const GitHubAuth = () => {
 
           const user = await getMe();
           setUser(user);
-          console.log("User data:", user);
-
           navigate("/dashboard/overview");
         }
       } catch (error) {

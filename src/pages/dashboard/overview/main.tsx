@@ -36,7 +36,6 @@ const RewardList = () => {
 
 export const Overview = () => {
   const { user } = useAuth();
-  console.log(user);
   const navigate = useNavigate();
 
   return (
