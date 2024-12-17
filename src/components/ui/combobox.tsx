@@ -51,7 +51,6 @@ export const Combobox: FC<ComboboxProps> = ({
     onValueChange(selectedValue);
     setOpen(false);
   };
-  console.log(value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

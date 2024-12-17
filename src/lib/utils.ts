@@ -14,10 +14,12 @@ export const clearAuthData = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("user");
 };
+
 type AuthData = {
   token: string | null;
   user: Contributor | null;
 };
+
 export const getAuthData = (): AuthData => ({
   token: localStorage.getItem("accessToken"),
   user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null,

@@ -36,6 +36,7 @@ const RewardList = () => {
 
 export const Overview = () => {
   const { user } = useAuth();
+  console.log(user);
   const navigate = useNavigate();
 
   return (
@@ -49,7 +50,7 @@ export const Overview = () => {
           </CardHeader>
           <CardContent>
             <Typography as="h2" variant="h2" className="text-center">
-              {user?.earned} points / {user?.daysContributed} days
+              {user && user?.earned} points / {user && user?.daysContributed} days
             </Typography>
           </CardContent>
         </Card>

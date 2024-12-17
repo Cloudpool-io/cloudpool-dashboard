@@ -1,7 +1,6 @@
 import { createContext, FC, useContext, useEffect, useMemo, useState } from "react";
 import { clearAuthData, getAuthData } from "@/lib/utils";
 import { Contributor } from "@/core/interfaces/contributor.interface";
-import { useNavigate } from "react-router";
 
 const AuthContext = createContext<AuthContextType>({
   token: null,
@@ -23,13 +22,12 @@ interface AuthProviderProps {
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem("accessToken"));
   const [user, setUser] = useState<Contributor | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const { token, user } = getAuthData();
     setToken(token);
     setUser(user);
-  }, [navigate]);
+  }, []);
 
   const logout = () => {
     clearAuthData();
