@@ -1,35 +1,41 @@
-import { useEffect } from "react";
-import { client } from "@/core/axios/main";
-import { useNavigate } from "react-router";
-import { useAuth } from "@/context/AuthProvider";
 import { getMe } from "@/api/auth/authService";
-import { Contributor } from "@/core/interfaces/contributor.interface";
+import { useAuth } from "@/context/AuthProvider";
+import { client } from "@/core/axios/main";
 import { saveAuthData } from "@/lib/utils";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const Redirection = () => {
-  const navigate = useNavigate();
+export const GitHubAuth = () => {
   const { setToken, setUser } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
 
     const githubAuth = async () => {
-      await client.get(`/auth/login/github?${code}`).then((data) => {
-        console.log(data);
-        if (data.data) {
-          saveAuthData(data.data.accessToken);
-          getMe().then((user: Contributor) => {
-            console.log(user);
-            setToken(data.data.accessToken);
-            setUser(user);
-            navigate("/dashboard/overview");
-          });
-        }
-      });
-    };
-    githubAuth();
-  }, [navigate, setToken]);
+      if (!code) return;
 
-  return <div>You are redirected to the Dashboard</div>;
+      try {
+        const { data } = await client.get(`/auth/login/github?code=${code}`);
+
+        if (data?.accessToken) {
+          saveAuthData(data.accessToken);
+          setToken(data.accessToken);
+
+          const user = await getMe();
+          setUser(user);
+          console.log("User data:", user);
+
+          navigate("/dashboard/overview");
+        }
+      } catch (error) {
+        console.error("GitHub Auth failed:", error);
+      }
+    };
+
+    githubAuth();
+  }, [client, saveAuthData, setToken, setUser, navigate]);
+
+  return null; // Or any loading indicator
 };

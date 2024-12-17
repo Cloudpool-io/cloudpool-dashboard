@@ -1,6 +1,6 @@
 import { PrivateRoute } from "@/components/private-route";
 import { PublicRoute } from "@/components/public-routes";
-import { Redirection } from "@/components/redirection";
+import { GitHubAuth } from "@/components/redirection";
 import { AuthLayout } from "@/pages/auth/layout";
 import { Login } from "@/pages/auth/login";
 import { Register } from "@/pages/auth/register";
@@ -20,7 +20,7 @@ export const Router = () => {
           <Route path="/auth" element={<AuthLayout />}>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            <Route path="github/callback" element={<Redirection />} />
+            <Route path="github/callback" element={<GitHubAuth />} />
           </Route>
         </Route>
 
