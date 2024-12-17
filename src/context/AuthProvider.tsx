@@ -7,6 +7,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   setToken: () => {},
   logout: () => {},
+  setUser: () => {},
 });
 
 interface AuthContextType {
@@ -14,32 +15,34 @@ interface AuthContextType {
   token: string | null;
   user: Contributor | null;
   setToken: (token: string | null) => void;
+  setUser: (user: Contributor | null) => void;
 }
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("accessToken"));
+  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<Contributor | null>(null);
 
   useEffect(() => {
     const { token, user } = getAuthData();
-    setToken(token);
-    setUser(user);
+    if (token) setToken(token);
+    if (user) setUser(user);
   }, []);
 
   const logout = () => {
     clearAuthData();
     setToken(null);
+    setUser(null); // Ensure user is cleared as well
   };
-
   const contextValue: AuthContextType = useMemo(
     () => ({
       token,
       user,
       setToken,
       logout,
+      setUser,
     }),
     [token, user],
   );

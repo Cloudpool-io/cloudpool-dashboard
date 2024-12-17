@@ -13,7 +13,7 @@ import { loginFormInputs, loginSchema } from "./form";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
 import { useMutation } from "@tanstack/react-query";
-import { signIn } from "@/context/auth";
+import { getMe, signIn } from "@/context/auth";
 import { CustomAxiosError } from "@/core/interfaces/error.interface";
 import { GithubLoginButton } from "./github-login-button";
 
@@ -26,7 +26,7 @@ export const Login = () => {
     },
   });
   const { toast } = useToast();
-  const { setToken } = useAuth();
+  const { setToken, setUser } = useAuth();
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
@@ -36,8 +36,11 @@ export const Login = () => {
         title: "Success",
         description: "You have logged in successfully",
       });
-      setToken(data.accessToken);
-      navigate("/dashboard/overview");
+      getMe().then((user) => {
+        setToken(data.accessToken);
+        setUser(user);
+        navigate("/dashboard/overview");
+      });
     },
     onError: (error: CustomAxiosError) => {
       if (error.response?.data.code) {
